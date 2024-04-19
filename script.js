@@ -7,7 +7,9 @@ of the letters
 @todo filter out words that are too short
 @todo get rid of print statements
 @todo create a ui
+@todo indicate the panagrams that use all letters
 
+Words and letters are compared in lowercase
 
 @references NYT Spelling Bee Game
 @author Em Nam
@@ -31,14 +33,9 @@ const miniDict = [
 ];
 const dictionary = readDictionary("assets/dictionary.txt");
 
-for (let i = 0; i < 20; i++) {
-    console.log(dictionary[i]);
-}
-
-// generateAllWordsResult(letters, miniDict);
-// const words = generateAllWords(letters, miniDict);
-// console.log("All words:");
-// console.log(words);
+// for (let i = 0; i < 20; i++) {
+//     console.log(dictionary[i]);
+// }
 
 const wordsTarget = generateAllWordsWithTarget(letters, miniDict, target);
 const wordsTargetBig = generateAllWordsWithTarget(letters, dictionary, target);
@@ -49,13 +46,14 @@ console.log(wordsTargetBig);
 //read list of words from a dictionary txt file and return the array of words
 //assume each word is deliniated by a newline
 function readDictionary(file) {
-    return filesystem.readFileSync(file).toString().split("\n");
+    return filesystem.readFileSync(file).toString().toLowerCase().split("\n");
 }
 
 function generateAllWordsWithTarget(letters, dict, target) {
+    console.log(`${letters}, ${dict}, ${target}`);
     const words = [];
     for (let i = 0; i < dict.length; i++) {
-        console.log(`checking word ${dict[i]}`);
+        // console.log(`checking word ${dict[i]}`);
         if (checkWordWithTarget(letters, dict[i], target, false)) {
             // console.log(`${i}: word checked ${dict[i]}`);
             words.push(dict[i]);
@@ -79,12 +77,14 @@ function checkWordWithTarget(letters, word, target, valid) {
     }
 }
 
-function generateAllWordsResult(letters, dict) {
-    for (let i = 0; i < dict.length; i++) {
-        let result = checkWord(letters, dict[i]);
-        console.log(`${i}: word checked ${dict[i]} is ${result}`);
-    }
-}
+//*************************************************************************//
+//********* GENERATE AND CHECK FOR ALL WORDS, DISREGARDS TARGET ***********//
+//*************************************************************************//
+
+// generateAllWordsResult(letters, miniDict);
+// const words = generateAllWords(letters, miniDict);
+// console.log("All words:");
+// console.log(words);
 
 /**
  * return an array of all the words in the dict that are able to made 
@@ -101,6 +101,13 @@ function generateAllWords(letters, dict) {
         }
     }
     return words;
+}
+
+function generateAllWordsResult(letters, dict) {
+    for (let i = 0; i < dict.length; i++) {
+        let result = checkWord(letters, dict[i]);
+        console.log(`${i}: word checked ${dict[i]} is ${result}`);
+    }
 }
 
 /**
