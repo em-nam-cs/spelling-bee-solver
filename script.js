@@ -14,6 +14,8 @@ of the letters
 @date 04-16-2024
 */
 
+const filesystem = require("fs");
+
 const letters = ["c", "a", "t"];
 const target = "a";
 const miniDict = [
@@ -27,20 +29,27 @@ const miniDict = [
     "action",
     "tata",
 ];
+const dictionary = readDictionary("assets/dictionary.txt");
+
+for (let i = 0; i < 20; i++) {
+    console.log(dictionary[i]);
+}
 
 // generateAllWordsResult(letters, miniDict);
-const words = generateAllWords(letters, miniDict);
-console.log("All words:");
-console.log(words);
+// const words = generateAllWords(letters, miniDict);
+// console.log("All words:");
+// console.log(words);
+
 const wordsTarget = generateAllWordsWithTarget(letters, miniDict, target);
+const wordsTargetBig = generateAllWordsWithTarget(letters, dictionary, target);
 console.log("Words with target");
 console.log(wordsTarget);
+console.log(wordsTargetBig);
 
-function generateAllWordsResult(letters, dict) {
-    for (let i = 0; i < dict.length; i++) {
-        let result = checkWord(letters, dict[i]);
-        console.log(`${i}: word checked ${dict[i]} is ${result}`);
-    }
+//read list of words from a dictionary txt file and return the array of words
+//assume each word is deliniated by a newline
+function readDictionary(file) {
+    return filesystem.readFileSync(file).toString().split("\n");
 }
 
 function generateAllWordsWithTarget(letters, dict, target) {
@@ -48,11 +57,33 @@ function generateAllWordsWithTarget(letters, dict, target) {
     for (let i = 0; i < dict.length; i++) {
         console.log(`checking word ${dict[i]}`);
         if (checkWordWithTarget(letters, dict[i], target, false)) {
-            console.log(`${i}: word checked ${dict[i]}`);
+            // console.log(`${i}: word checked ${dict[i]}`);
             words.push(dict[i]);
         }
     }
     return words;
+}
+
+// assume valid initially false
+function checkWordWithTarget(letters, word, target, valid) {
+    if (word == "") {
+        return valid;
+    } else if (letters.includes(word[0])) {
+        if (word[0] == target) {
+            //if the target is in the word, it is now valid
+            valid = true;
+        }
+        return checkWordWithTarget(letters, word.slice(1), target, valid);
+    } else {
+        return false;
+    }
+}
+
+function generateAllWordsResult(letters, dict) {
+    for (let i = 0; i < dict.length; i++) {
+        let result = checkWord(letters, dict[i]);
+        console.log(`${i}: word checked ${dict[i]} is ${result}`);
+    }
 }
 
 /**
@@ -86,21 +117,6 @@ function checkWord(letters, word) {
         return true;
     } else if (letters.includes(word[0])) {
         return checkWord(letters, word.slice(1));
-    } else {
-        return false;
-    }
-}
-
-// valid initially false
-function checkWordWithTarget(letters, word, target, valid) {
-    if (word == "") {
-        return valid;
-    } else if (letters.includes(word[0])) {
-        if (word[0] == target) {
-            //if the target is in the word, it is now valid
-            valid = true;
-        }
-        return checkWordWithTarget(letters, word.slice(1), target, valid);
     } else {
         return false;
     }
