@@ -27,10 +27,6 @@ body {
     gap: 20px;
 }
 
-#target-input-label {
-    margin: 0;
-}
-
 #letter-input,
 #find-words-btn {
     height: 2em;
@@ -47,6 +43,14 @@ body {
     outline: none;
 }
 
+#letter-input {
+    text-transform: uppercase;
+}
+
+#letter-input::placeholder {
+    text-transform: none;
+}
+
 #find-words-btn {
     color: var(--accent-color);
     border: var(--accent-color) solid 1px;
@@ -54,6 +58,10 @@ body {
 
 button {
     cursor: pointer;
+}
+
+#target-input-label {
+    margin: 0;
 }
 
 .target-input {
@@ -64,10 +72,17 @@ button {
     height: 40px;
     width: 40px;
     margin: 3px;
+    font-weight: bold;
 }
 
 .target-input:hover {
-    background-color: color-mix(in srgb, var(--block-color), transparent 80%);
+    background-color: color-mix(in srgb, var(--block-color), transparent 70%);
+}
+
+.target,
+.target:hover {
+    background-color: var(--target-color);
+    cursor: default;
 }
 
 h1 {
