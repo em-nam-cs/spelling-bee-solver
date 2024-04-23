@@ -25,8 +25,8 @@ of the letters
 
 const filesystem = require("fs");
 
-const letters = ["t", "o", "l", "k", "b", "i", "n"];
-const target = "b";
+const letters = ["r", "o", "c", "k", "g", "i", "n"];
+const target = "o";
 const miniDict = [
     "act",
     "cat",
@@ -40,20 +40,44 @@ const miniDict = [
 ];
 const dictionary = readDictionary("assets/dictionary.txt");
 
-const wordsTarget = generateAllWordsWithTarget(letters, miniDict, target);
-const wordsTargetBig = generateAllWordsWithTarget(letters, dictionary, target);
+const wordsTargetMini = generateAllWordsWithTarget(letters, miniDict, target);
+const wordsTarget = generateAllWordsWithTarget(letters, dictionary, target);
 console.log("Words with target");
+console.log(wordsTargetMini);
 console.log(wordsTarget);
-console.log(wordsTargetBig);
+
+const panagrams = markAllPanagrams(wordsTarget, letters);
+console.log(panagrams);
+
+
+function markAllPanagrams(wordList, letters){
+    const panagrams = [];
+    for (let i = 0; i < wordList.length; i++){
+        if (checkWordPanagram(wordList[i], letters)){
+            panagrams.push(wordList[i]);
+        }
+    }
+    return panagrams;
+}
 
 /**
  * reads a list of words from a text file and returns array
  *      assume that each word is deliniated by a newline
  * @param {*} file name of the path/file that is being read in
- * @returns an array that stores all of the words in the file
+ * @returns an array that stores all of the words in the file in lowercase
  */
 function readDictionary(file) {
     return filesystem.readFileSync(file).toString().toLowerCase().split("\n");
+}
+
+
+function checkWordPanagram(word, letters){
+    for (let i = 0; i < letters.length; i++) {
+        if (!word.includes(letters[i])) {
+            return false;
+        }
+    }
+    return true;
 }
 
 /**
