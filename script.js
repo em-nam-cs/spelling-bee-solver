@@ -49,13 +49,10 @@ console.log(wordsTargetMini);
 console.log(wordsTarget);
 
 const valid = instantiateAllValidWords(wordsTarget, letters);
-console.log(valid);
 valid.sort(compareByScore);
 console.log(valid);
 console.log(`size valid: ${valid.length}`);
 console.log(`size init: ${wordsTarget.length}`);
-
-valid.sort(compareByScore);
 
 const panagrams = returnAllPanagrams(valid, letters);
 console.log(panagrams);
