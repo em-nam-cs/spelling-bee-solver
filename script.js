@@ -25,10 +25,10 @@ const filesystem = require("fs");
 const MIN_WORD_LENGTH = 4;
 const PANAGRAM_BONUS = 7;
 
-// const letters = ["r", "o", "c", "k", "g", "i", "n"];
-// const target = "o";
-const letters = ["T", "O", "L", "B", "K", "I", "N"];
-const target = "B";
+const letters = ["R", "O", "C", "K", "G", "I", "N"];
+const target = "O";
+// const letters = ["T", "O", "L", "B", "K", "I", "N"];
+// const target = "B";
 const miniDict = [
     "act",
     "cat",
@@ -48,13 +48,13 @@ console.log("Words with target");
 console.log(wordsTargetMini);
 console.log(wordsTarget);
 
-const panagrams = markAllPanagrams(wordsTarget, letters);
-console.log(panagrams);
-
 const valid = instantiateAllValidWords(wordsTarget, letters);
 console.log(valid);
 console.log(`size valid: ${valid.length}`);
 console.log(`size init: ${wordsTarget.length}`);
+
+const panagrams = returnAllPanagrams(valid, letters);
+console.log(panagrams);
 
 /**
  * Constructor for a ValidWord object, which is an object that is a word
@@ -98,15 +98,32 @@ function instantiateAllValidWords(wordList, letters) {
     return validWords;
 }
 
-//re-write this using the properties of the ValidWords object
-function markAllPanagrams(wordList, letters) {
+/**
+ * find and return a list of all the panagrams from a given wordList of 
+        ValidWords
+ * @param {*} wordList list of words being checked if panagrams
+ * @returns an array of ValidWord objects that are panagrams
+ */
+function returnAllPanagrams(wordList) {
     const panagrams = [];
     for (let i = 0; i < wordList.length; i++) {
-        if (checkIsPanagram(wordList[i], letters)) {
+        if (wordList[i].isPanagram) {
             panagrams.push(wordList[i]);
         }
     }
     return panagrams;
+}
+
+/**
+ * sort ValidWord list based on a specified criteria (Panagrams at the top, 
+        highest scoring, length) (IS THIS NECCESSARY BECAUSE THE PANAGRAM
+        BONUS IS SO OP AND THE SCORE IS ESSENTIALLY THE LENGTH)
+ * @param {*} words 
+ * @param {*} criteria 
+ * @returns 
+ */
+function sortWords(words, criteria) {
+    return words;
 }
 
 /**
