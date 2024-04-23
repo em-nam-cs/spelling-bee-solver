@@ -21,43 +21,30 @@ start with one of the letters
 @date 04-23-2024
 */
 
+/**
+ * @todo hidden class for select target when no letters are entered yet
+ @todo highlight chosen target word by adding or removing the class target
+ @todo get letters from the input box when click find words or enter in the text input
+ @todo get and store the letters in an array
+ @todo create new DOM html elements for each letter upon any change in text field
+ @todo limit text field to a certain number of letters?
+ @todo get and store the target letter from the selection
+ */
+
 const filesystem = require("fs");
 const MIN_WORD_LENGTH = 4;
 const PANAGRAM_BONUS = 7;
 
-// const letters = ["R", "O", "C", "K", "G", "I", "N"];
-// const target = "O";
-const letters = ["N", "M", "T", "A", "L", "B", "U"];
-const target = "U";
-// const letters = ["T", "O", "L", "B", "K", "I", "N"];
-// const target = "B";
-const miniDict = [
-    "act",
-    "cat",
-    "tact",
-    "catty",
-    "ct",
-    "false",
-    "blank",
-    "action",
-    "tata",
-];
 const dictionary = readDictionary("assets/dictionary.txt");
+const letterInput = document.getElementById("letter-input");
+const findWordsBtn = document.getElementById("find-words-btn");
+findWordsBtn.addEventListener("click", findWords);
+// letterInput.addEventListener("enter", findWords);
 
-const wordsTargetMini = generateAllWordsWithTarget(letters, miniDict, target);
-const wordsTarget = generateAllWordsWithTarget(letters, dictionary, target);
-console.log("Words with target");
-console.log(wordsTargetMini);
-console.log(wordsTarget);
-
-const valid = instantiateAllValidWords(wordsTarget, letters);
-valid.sort(compareByScore);
-console.log(valid);
-console.log(`size valid: ${valid.length}`);
-console.log(`size init: ${wordsTarget.length}`);
-
-const panagrams = returnAllPanagrams(valid, letters);
-console.log(panagrams);
+function findWords() {
+    console.log("finding words");
+    // console.log(letterInput);
+}
 
 /**
  * Constructor for a ValidWord object, which is an object that is a word
@@ -220,6 +207,47 @@ function checkWordWithTarget(letters, word, target, valid) {
         return false;
     }
 }
+
+//*************************************************************************//
+//************ TEST BACKGROUND LOGIC/WORD FINDING FUNCTIONS ***************//
+//*************************************************************************//
+
+// const letters = ["R", "O", "C", "K", "G", "I", "N"];
+// const target = "O";
+const letters = ["N", "M", "T", "A", "L", "B", "U"];
+const target = "U";
+// const letters = ["T", "O", "L", "B", "K", "I", "N"];
+// const target = "B";
+const miniDict = [
+    "act",
+    "cat",
+    "tact",
+    "catty",
+    "ct",
+    "false",
+    "blank",
+    "action",
+    "tata",
+];
+
+const wordsTargetMini = generateAllWordsWithTarget(letters, miniDict, target);
+const wordsTarget = generateAllWordsWithTarget(letters, dictionary, target);
+console.log("Words with target");
+console.log(wordsTargetMini);
+console.log(wordsTarget);
+
+const valid = instantiateAllValidWords(wordsTarget, letters);
+valid.sort(compareByScore);
+console.log(valid);
+console.log(`size valid: ${valid.length}`);
+console.log(`size init: ${wordsTarget.length}`);
+
+const panagrams = returnAllPanagrams(valid, letters);
+console.log(panagrams);
+
+//*************************************************************************//
+//************ END TEST BACKGROUND LOGIC/WORD FINDING FUNCT ***************//
+//*************************************************************************//
 
 //*************************************************************************//
 //********* GENERATE AND CHECK FOR ALL WORDS, DISREGARDS TARGET ***********//
