@@ -3,16 +3,48 @@
     --page-color: #ffffff;
     --block-color: #e6e6e6;
     --text-color: #000000;
-    --accent-color: #BCA623;
+    --accent-color: #bca623;
 }
 
 body {
     background-color: var(--page-color);
     color: var(--body-text-color);
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* justify-content: center; */
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    margin: 25px;
+}
+
+.letter-input-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    margin: 0;
+    gap: 10px;
+}
+
+#letter-input,
+#find-words-btn {
+    height: 2em;
+    width: 50%;
+    font-size: larger;
+    text-align: center;
+}
+
+#letter-input {
+    letter-spacing: 0.25em;
+}
+
+.target-input {
+    font-size: medium;
+    height: 40px;
+    width: 40px;
+    margin: 3px;
+}
+
+h1 {
+    color: var(--accent-color);
 }
