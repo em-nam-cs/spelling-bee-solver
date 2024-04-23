@@ -129,16 +129,6 @@ function returnAllPanagrams(wordList) {
     return panagrams;
 }
 
-/**
- * sort ValidWord list based on a specified criteria (Panagrams at the top, 
-        highest scoring, length) (IS THIS NECCESSARY BECAUSE THE PANAGRAM
-        BONUS IS SO OP AND THE SCORE IS ESSENTIALLY THE LENGTH)
- * @param {*} words 
- * @returns 
- */
-function sortWords(words) {
-    
-}
 
 /**
  * Calculate the score earned for a given word. A minimum letter word is 1 point
