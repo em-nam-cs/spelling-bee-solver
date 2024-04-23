@@ -56,6 +56,10 @@ body {
     border: var(--accent-color) solid 1px;
 }
 
+#find-words-btn:hover {
+    background-color: color-mix(in srgb, var(--block-color), transparent 70%);
+}
+
 button {
     cursor: pointer;
 }
@@ -76,7 +80,7 @@ button {
 }
 
 .target-input:hover {
-    background-color: color-mix(in srgb, var(--block-color), transparent 70%);
+    background-color: color-mix(in srgb, var(--target-color), transparent 70%);
 }
 
 .target,
