@@ -25,8 +25,10 @@ of the letters
 
 const filesystem = require("fs");
 
-const letters = ["r", "o", "c", "k", "g", "i", "n"];
-const target = "o";
+// const letters = ["r", "o", "c", "k", "g", "i", "n"];
+// const target = "o";
+const letters = ["t", "o", "l", "b", "k", "i", "n"];
+const target = "b";
 const miniDict = [
     "act",
     "cat",
@@ -49,15 +51,78 @@ console.log(wordsTarget);
 const panagrams = markAllPanagrams(wordsTarget, letters);
 console.log(panagrams);
 
+const valid = instantiateAllValidWords(wordsTarget, letters);
+console.log(valid);
+console.log(`size valid: ${valid.length}`);
+console.log(`size init: ${wordsTarget.length}`);
 
-function markAllPanagrams(wordList, letters){
+/**
+ * Constructor for a ValidWord object, which is an object that is a word
+ *      that can be created using the given letters
+ * @param {*} word string that is the word created
+ * @param {*} isPanagram boolean true if word is panagram (uses all letters)
+ * @param {*} numLetters int length of the word
+ * @param {*} score int score for submitting word
+ */
+function ValidWord(word, isPanagram, numLetters, score) {
+    this.word = word;
+    this.isPanagram = isPanagram;
+    this.numLetters = numLetters;
+    this.score = score;
+}
+
+/**
+ * for each word that is possible to be created, create a new ValidWord object
+        that stores information about the word (the string, if panagram, length
+        and the score)
+ * @param {*} wordList list of words that are able to be created 
+ * @param {*} letters array of letters that can be used
+ * @returns an array where each index contains a ValidWord object
+ */
+function instantiateAllValidWords(wordList, letters) {
+    const validWords = [];
+    for (let i = 0; i < wordList.length; i++) {
+        validWords.push(
+            new ValidWord(
+                wordList[i],
+                checkWordPanagram(wordList[i], letters),
+                wordList[i].length,
+                calcScore(wordList[i])
+            )
+        );
+    }
+    return validWords;
+}
+
+function calcScore(word) {
+    return 1;
+}
+
+//re-write this using the properties of the ValidWords object
+function markAllPanagrams(wordList, letters) {
     const panagrams = [];
-    for (let i = 0; i < wordList.length; i++){
-        if (checkWordPanagram(wordList[i], letters)){
+    for (let i = 0; i < wordList.length; i++) {
+        if (checkWordPanagram(wordList[i], letters)) {
             panagrams.push(wordList[i]);
         }
     }
     return panagrams;
+}
+
+/**
+ * returns if a given word is considered a panagram and uses all of the given
+ *      letters
+ * @param {*} word string, word that is being checked
+ * @param {*} letters array of letters that need to appear in word
+ * @returns boolean, true if all the letters are in the word, false otherwise
+ */
+function checkWordPanagram(word, letters) {
+    for (let i = 0; i < letters.length; i++) {
+        if (!word.includes(letters[i])) {
+            return false;
+        }
+    }
+    return true;
 }
 
 /**
@@ -68,16 +133,6 @@ function markAllPanagrams(wordList, letters){
  */
 function readDictionary(file) {
     return filesystem.readFileSync(file).toString().toLowerCase().split("\n");
-}
-
-
-function checkWordPanagram(word, letters){
-    for (let i = 0; i < letters.length; i++) {
-        if (!word.includes(letters[i])) {
-            return false;
-        }
-    }
-    return true;
 }
 
 /**
