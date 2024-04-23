@@ -24,6 +24,8 @@ of the letters
 */
 
 const filesystem = require("fs");
+const MIN_WORD_LENGTH = 4;
+const PANAGRAM_BONUS = 7;
 
 // const letters = ["r", "o", "c", "k", "g", "i", "n"];
 // const target = "o";
@@ -82,20 +84,22 @@ function ValidWord(word, isPanagram, numLetters, score) {
 function instantiateAllValidWords(wordList, letters) {
     const validWords = [];
     for (let i = 0; i < wordList.length; i++) {
-        validWords.push(
-            new ValidWord(
-                wordList[i],
-                checkWordPanagram(wordList[i], letters),
-                wordList[i].length,
-                calcScore(wordList[i])
-            )
-        );
+        
+        if (wordList[i].length >= MIN_WORD_LENGTH){
+            validWords.push(
+                new ValidWord(
+                    wordList[i],
+                    checkWordPanagram(wordList[i], letters),
+                    wordList[i].length,
+                    calcScore(
+                        wordList[i],
+                        checkWordPanagram(wordList[i], letters)
+                    )
+                )
+            );
+        }
     }
     return validWords;
-}
-
-function calcScore(word) {
-    return 1;
 }
 
 //re-write this using the properties of the ValidWords object
@@ -107,6 +111,17 @@ function markAllPanagrams(wordList, letters) {
         }
     }
     return panagrams;
+}
+
+function calcScore(word, isPanagram) {
+    const len = word.length;
+    if (len < MIN_WORD_LENGTH) {
+        return 0;
+    } else if ((len == MIN_WORD_LENGTH)) {
+        return 1;
+    } else {
+        return len + (PANAGRAM_BONUS * isPanagram);
+    }
 }
 
 /**
