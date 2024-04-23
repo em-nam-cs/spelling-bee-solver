@@ -4,22 +4,17 @@
     that can be created that include the target letter. Letters can be reused
     as frequently as needed
 
-Note: Words and letters are compared in lowercase (have this built in so no user issues)
+    If no target chosen, include all words and all possible words are valid 
+    because an empty string/empty target can be considered to be in all words
 
-@todo use a larger legit ditionary
-@todo optimize search dictionary in sections and cut out words that don't start with one
-of the letters
-@todo filter out words that are too short (based on a variable)
-@todo indicate the panagrams that use all letters
-@todo get rid of print statements
+
+Note: Words and letters are compared in uppercase 
+(have this built in so no user issues)
+
+@todo optimize search dictionary in sections and cut out words that don't 
+start with one of the letters
 @todo create a ui
 @todo create automated testing, more testing ex
-
-What functionality do I want if no target is chosen?? 
-- all words that can be created valid b/c empty str in all words
-What point to filter out based on target, based on length??
-
-
 
 @references NYT Spelling Bee Game
 @author Em Nam
@@ -79,7 +74,8 @@ function ValidWord(word, isPanagram, numLetters, score) {
 /**
  * for each word that is possible to be created, create a new ValidWord object
         that stores information about the word (the string, if panagram, length
-        and the score)
+        and the score). Based on NYT, a valid word must be at least the 
+        MIN_WROD_LENGTH 
  * @param {*} wordList list of words that are able to be created 
  * @param {*} letters array of letters that can be used
  * @returns an array where each index contains a ValidWord object
@@ -88,15 +84,13 @@ function instantiateAllValidWords(wordList, letters) {
     const validWords = [];
     for (let i = 0; i < wordList.length; i++) {
         if (wordList[i].length >= MIN_WORD_LENGTH) {
+            let panagramStatus = checkIsPanagram(wordList[i], letters);
             validWords.push(
                 new ValidWord(
                     wordList[i],
-                    checkWordPanagram(wordList[i], letters),
+                    panagramStatus,
                     wordList[i].length,
-                    calcScore(
-                        wordList[i],
-                        checkWordPanagram(wordList[i], letters)
-                    )
+                    calcScore(wordList[i], panagramStatus)
                 )
             );
         }
@@ -108,13 +102,21 @@ function instantiateAllValidWords(wordList, letters) {
 function markAllPanagrams(wordList, letters) {
     const panagrams = [];
     for (let i = 0; i < wordList.length; i++) {
-        if (checkWordPanagram(wordList[i], letters)) {
+        if (checkIsPanagram(wordList[i], letters)) {
             panagrams.push(wordList[i]);
         }
     }
     return panagrams;
 }
 
+/**
+ * Calculate the score earned for a given word. A minimum letter word is 1 point
+        Otherwise a word gets the number of points based on it's length. A
+        Panagram gets bonus points
+ * @param {*} word string that is being scored
+ * @param {*} isPanagram boolean if the word is a panagram or not
+ * @returns int that represents number of points earned
+ */
 function calcScore(word, isPanagram) {
     const len = word.length;
     if (len < MIN_WORD_LENGTH) {
@@ -133,7 +135,7 @@ function calcScore(word, isPanagram) {
  * @param {*} letters array of letters that need to appear in word
  * @returns boolean, true if all the letters are in the word, false otherwise
  */
-function checkWordPanagram(word, letters) {
+function checkIsPanagram(word, letters) {
     for (let i = 0; i < letters.length; i++) {
         if (!word.includes(letters[i])) {
             return false;
@@ -164,20 +166,14 @@ function readDictionary(file) {
  * @returns
  */
 function generateAllWordsWithTarget(letters, dict, target) {
-    // console.log(`${letters}, ${dict}, ${target}`);
     const words = [];
-
     for (let i = 0; i < dict.length; i++) {
-        // console.log(`checking word ${dict[i]}`);
         if (checkWordWithTarget(letters, dict[i], target, false)) {
-            // console.log(`${i}: word checked ${dict[i]}`);
             words.push(dict[i]);
         }
     }
     return words;
 }
-
-
 
 /**
  * Determine if the word is a valid word to create using the letters and
