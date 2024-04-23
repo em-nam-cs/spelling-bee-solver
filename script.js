@@ -15,12 +15,15 @@ of the letters
 @todo create a ui
 @todo create automated testing, more testing ex
 
+What functionality do I want if no target is chosen?? 
+- all words that can be created valid b/c empty str in all words
+What point to filter out based on target, based on length??
 
 
 
 @references NYT Spelling Bee Game
 @author Em Nam
-@date 04-16-2024
+@date 04-23-2024
 */
 
 const filesystem = require("fs");
@@ -29,8 +32,8 @@ const PANAGRAM_BONUS = 7;
 
 // const letters = ["r", "o", "c", "k", "g", "i", "n"];
 // const target = "o";
-const letters = ["t", "o", "l", "b", "k", "i", "n"];
-const target = "b";
+const letters = ["T", "O", "L", "B", "K", "I", "N"];
+const target = "B";
 const miniDict = [
     "act",
     "cat",
@@ -84,8 +87,7 @@ function ValidWord(word, isPanagram, numLetters, score) {
 function instantiateAllValidWords(wordList, letters) {
     const validWords = [];
     for (let i = 0; i < wordList.length; i++) {
-        
-        if (wordList[i].length >= MIN_WORD_LENGTH){
+        if (wordList[i].length >= MIN_WORD_LENGTH) {
             validWords.push(
                 new ValidWord(
                     wordList[i],
@@ -117,10 +119,10 @@ function calcScore(word, isPanagram) {
     const len = word.length;
     if (len < MIN_WORD_LENGTH) {
         return 0;
-    } else if ((len == MIN_WORD_LENGTH)) {
+    } else if (len == MIN_WORD_LENGTH) {
         return 1;
     } else {
-        return len + (PANAGRAM_BONUS * isPanagram);
+        return len + PANAGRAM_BONUS * isPanagram;
     }
 }
 
@@ -147,7 +149,7 @@ function checkWordPanagram(word, letters) {
  * @returns an array that stores all of the words in the file in lowercase
  */
 function readDictionary(file) {
-    return filesystem.readFileSync(file).toString().toLowerCase().split("\n");
+    return filesystem.readFileSync(file).toString().toUpperCase().split("\n");
 }
 
 /**
@@ -164,6 +166,7 @@ function readDictionary(file) {
 function generateAllWordsWithTarget(letters, dict, target) {
     // console.log(`${letters}, ${dict}, ${target}`);
     const words = [];
+
     for (let i = 0; i < dict.length; i++) {
         // console.log(`checking word ${dict[i]}`);
         if (checkWordWithTarget(letters, dict[i], target, false)) {
@@ -173,6 +176,8 @@ function generateAllWordsWithTarget(letters, dict, target) {
     }
     return words;
 }
+
+
 
 /**
  * Determine if the word is a valid word to create using the letters and
@@ -191,7 +196,7 @@ function checkWordWithTarget(letters, word, target, valid) {
     if (word == "") {
         return valid;
     } else if (letters.includes(word[0])) {
-        if (word[0] == target) {
+        if (word[0] == target || target === "") {
             //if the target is in the word, it is now valid
             valid = true;
         }
