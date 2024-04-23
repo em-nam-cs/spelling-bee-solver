@@ -25,10 +25,10 @@ const filesystem = require("fs");
 const MIN_WORD_LENGTH = 4;
 const PANAGRAM_BONUS = 7;
 
-const letters = ["R", "O", "C", "K", "G", "I", "N"];
-const target = "O";
-// const letters = ["T", "O", "L", "B", "K", "I", "N"];
-// const target = "B";
+// const letters = ["R", "O", "C", "K", "G", "I", "N"];
+// const target = "O";
+const letters = ["T", "O", "L", "B", "K", "I", "N"];
+const target = "B";
 const miniDict = [
     "act",
     "cat",
@@ -50,8 +50,12 @@ console.log(wordsTarget);
 
 const valid = instantiateAllValidWords(wordsTarget, letters);
 console.log(valid);
+valid.sort(compareByScore);
+console.log(valid);
 console.log(`size valid: ${valid.length}`);
 console.log(`size init: ${wordsTarget.length}`);
+
+valid.sort(compareByScore);
 
 const panagrams = returnAllPanagrams(valid, letters);
 console.log(panagrams);
@@ -69,6 +73,17 @@ function ValidWord(word, isPanagram, numLetters, score) {
     this.isPanagram = isPanagram;
     this.numLetters = numLetters;
     this.score = score;
+}
+
+/**
+ * comparison function that sorts in desc order with the highest score first
+ * @param {*} a first ValidWord
+ * @param {*} b second ValidWord
+ * @returns negative if the second word scores lower, postive if second word is
+        a higher score, 0 if both words have the same score
+ */
+function compareByScore(a, b) {
+    return b.score - a.score;
 }
 
 /**
@@ -119,11 +134,10 @@ function returnAllPanagrams(wordList) {
         highest scoring, length) (IS THIS NECCESSARY BECAUSE THE PANAGRAM
         BONUS IS SO OP AND THE SCORE IS ESSENTIALLY THE LENGTH)
  * @param {*} words 
- * @param {*} criteria 
  * @returns 
  */
-function sortWords(words, criteria) {
-    return words;
+function sortWords(words) {
+    
 }
 
 /**
