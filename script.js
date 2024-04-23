@@ -27,8 +27,10 @@ const PANAGRAM_BONUS = 7;
 
 // const letters = ["R", "O", "C", "K", "G", "I", "N"];
 // const target = "O";
-const letters = ["T", "O", "L", "B", "K", "I", "N"];
-const target = "B";
+const letters = ["N", "M", "T", "A", "L", "B", "U"];
+const target = "U";
+// const letters = ["T", "O", "L", "B", "K", "I", "N"];
+// const target = "B";
 const miniDict = [
     "act",
     "cat",
@@ -125,7 +127,6 @@ function returnAllPanagrams(wordList) {
     }
     return panagrams;
 }
-
 
 /**
  * Calculate the score earned for a given word. A minimum letter word is 1 point

@@ -1,3 +1,18 @@
-* {
-color: blue;
+:root {
+    --target-color: #f7da31;
+    --page-color: #ffffff;
+    --block-color: #e6e6e6;
+    --text-color: #000000;
+    --accent-color: #BCA623;
+}
+
+body {
+    background-color: var(--page-color);
+    color: var(--body-text-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
 }
