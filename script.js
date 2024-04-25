@@ -29,13 +29,16 @@ start with one of the letters
  @todo create new DOM html elements for each letter upon any change in text field
  @todo limit text field to a certain number of letters?
  @todo get and store the target letter from the selection
+ @todo fix width of input sections when resize screen
  */
 
-const filesystem = require("fs");
+// const filesystem = require("fs");
+//should store file server side and then access http req?
+// import * as fs from "./fs";
 const MIN_WORD_LENGTH = 4;
 const PANAGRAM_BONUS = 7;
 
-const dictionary = readDictionary("assets/dictionary.txt");
+// const dictionary = readDictionary("assets/dictionary.txt");
 const letterInput = document.getElementById("letter-input");
 const findWordsBtn = document.getElementById("find-words-btn");
 findWordsBtn.addEventListener("click", findWords);
@@ -156,9 +159,9 @@ function checkIsPanagram(word, letters) {
  * @param {*} file name of the path/file that is being read in
  * @returns an array that stores all of the words in the file in lowercase
  */
-function readDictionary(file) {
-    return filesystem.readFileSync(file).toString().toUpperCase().split("\n");
-}
+// function readDictionary(file) {
+//     return filesystem.readFileSync(file).toString().toUpperCase().split("\n");
+// }
 
 /**
  * for each word in the dictionary, determine if it is a valid word to create
@@ -231,19 +234,19 @@ const miniDict = [
 ];
 
 const wordsTargetMini = generateAllWordsWithTarget(letters, miniDict, target);
-const wordsTarget = generateAllWordsWithTarget(letters, dictionary, target);
+// const wordsTarget = generateAllWordsWithTarget(letters, dictionary, target);
 console.log("Words with target");
 console.log(wordsTargetMini);
-console.log(wordsTarget);
+// console.log(wordsTarget);
 
-const valid = instantiateAllValidWords(wordsTarget, letters);
-valid.sort(compareByScore);
-console.log(valid);
-console.log(`size valid: ${valid.length}`);
-console.log(`size init: ${wordsTarget.length}`);
+// const valid = instantiateAllValidWords(wordsTarget, letters);
+// valid.sort(compareByScore);
+// console.log(valid);
+// console.log(`size valid: ${valid.length}`);
+// console.log(`size init: ${wordsTarget.length}`);
 
-const panagrams = returnAllPanagrams(valid, letters);
-console.log(panagrams);
+// const panagrams = returnAllPanagrams(valid, letters);
+// console.log(panagrams);
 
 //*************************************************************************//
 //************ END TEST BACKGROUND LOGIC/WORD FINDING FUNCT ***************//

@@ -1,0 +1,15 @@
+{
+  "name": "spelling-bee-solver",
+  "version": "1.0.0",
+  "description": "Solver for NYT Spelling Bee Game",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Em Nam",
+  "license": "ISC",
+
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
