@@ -38,7 +38,10 @@ start with one of the letters
 const MIN_WORD_LENGTH = 4;
 const PANAGRAM_BONUS = 7;
 
-// const dictionary = readDictionary("assets/dictionary.txt");
+const dictionary = readDictionary("assets/dictionary.txt");
+const dict = document.getElementById("dict");
+// console.log(dictionary);
+
 const letterInput = document.getElementById("letter-input");
 const findWordsBtn = document.getElementById("find-words-btn");
 findWordsBtn.addEventListener("click", findWords);
@@ -159,9 +162,23 @@ function checkIsPanagram(word, letters) {
  * @param {*} file name of the path/file that is being read in
  * @returns an array that stores all of the words in the file in lowercase
  */
-// function readDictionary(file) {
-//     return filesystem.readFileSync(file).toString().toUpperCase().split("\n");
-// }
+function readDictionary(file) {
+    sendXMLHttpRequest("GET", file, null, (response) => {
+        dict.innerText = response.toString().toUpperCase().split("\n");
+        return response.toString().toUpperCase().split("\n");
+    });
+}
+
+function sendXMLHttpRequest(type, url, data, callback) {
+    var newRequest = new XMLHttpRequest();
+    newRequest.open(type, url, true);
+    newRequest.send(data);
+    newRequest.onreadystatechange = function () {
+        if (this.status === 200 && this.readyState === 4) {
+            callback(this.response);
+        }
+    };
+}
 
 /**
  * for each word in the dictionary, determine if it is a valid word to create
@@ -217,10 +234,12 @@ function checkWordWithTarget(letters, word, target, valid) {
 
 // const letters = ["R", "O", "C", "K", "G", "I", "N"];
 // const target = "O";
-const letters = ["N", "M", "T", "A", "L", "B", "U"];
-const target = "U";
+// const letters = ["N", "M", "T", "A", "L", "B", "U"];
+// const target = "U";
 // const letters = ["T", "O", "L", "B", "K", "I", "N"];
 // const target = "B";
+const miniLetters = ["c", "a", "t"];
+const miniTarget = "a";
 const miniDict = [
     "act",
     "cat",
@@ -233,10 +252,15 @@ const miniDict = [
     "tata",
 ];
 
-const wordsTargetMini = generateAllWordsWithTarget(letters, miniDict, target);
-// const wordsTarget = generateAllWordsWithTarget(letters, dictionary, target);
+const wordsTargetMini = generateAllWordsWithTarget(
+    miniLetters,
+    miniDict,
+    miniTarget
+);
 console.log("Words with target");
 console.log(wordsTargetMini);
+
+// const wordsTarget = generateAllWordsWithTarget(letters, dictionary, target);
 // console.log(wordsTarget);
 
 // const valid = instantiateAllValidWords(wordsTarget, letters);
