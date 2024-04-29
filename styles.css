@@ -82,12 +82,14 @@ button {
 
 .target-input:hover {
     background-color: color-mix(in srgb, var(--target-color), transparent 70%);
+    cursor: pointer;
 }
 
 .target,
 .target:hover {
     background-color: var(--target-color);
     cursor: default;
+    pointer-events: none;
 }
 
 h1 {

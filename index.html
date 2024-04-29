@@ -15,43 +15,71 @@
     <body>
         <h1>SPELLING BEE SOLVER</h1>
 
-        <div class="letter-input-container">
-            <input
-                id="letter-input"
-                type="text"
-                placeholder="Enter Letters Here"
-            />
+        <form id="inputs-form" autocomplete="off">
+            <div class="letter-input-container">
+                <input
+                    id="letter-input"
+                    type="text"
+                    placeholder="Enter Letters Here"
+                />
 
-            <div id="target-input-container">
-                <p id="target-input-label">Select Target:</p>
-                <button class="target-input">A</button>
-                <button class="target-input">C</button>
-                <button class="target-input">T</button>
-                <button class="target-input">T</button>
-                <button class="target-input">T</button>
-                <button class="target-input target">T</button>
-                <button class="target-input">T</button>
+                <div id="target-input-container">
+                    <p id="target-input-label">Select Target:</p>
+                    <input
+                        type="button"
+                        class="target-input"
+                        value="A"
+                    />
+                    <input
+                        type="button"
+                        class="target-input"
+                        value="A"
+                    />
+                    <input
+                        type="button"
+                        class="target-input"
+                        value="A"
+                    />
+                    <input
+                        type="button"
+                        class="target-input"
+                        value="A"
+                    />
+                    <input
+                        type="button"
+                        class="target-input"
+                        value="A"
+                    />
+                    <input
+                        type="button"
+                        class="target-input target"
+                        value="A"
+                    />
+                    <input
+                        type="button"
+                        class="target-input"
+                        value="A"
+                    />
+                </div>
+                <button
+                    type="submit"
+                    id="find-words-btn"
+                >
+                    Find Words
+                </button>
             </div>
-            <button id="find-words-btn">Find Words</button>
-        </div>
+        </form>
 
         <hr />
         <p id="dict">test</p>
         <section>
             <h1>Valid Words:</h1>
-            <dl>
-                <dt>7 letter</dt>
-                <dd>wordasdf</dd>
-                <dd>wordasdf</dd>
-                <dd>wordasdf</dd>
-
+            <dl id="word-list-display">
                 <dt>6 letter</dt>
                 <dd>wordasf</dd>
                 <dd>wordadf</dd>
 
                 <dt>5 letter</dt>
-                <dd>worda</dd>
-                <dd>worda</dd>
                 <dd>worda</dd>
             </dl>
         </section>

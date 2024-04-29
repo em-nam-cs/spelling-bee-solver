@@ -11,11 +11,6 @@
 Note: Words and letters are compared in uppercase 
 (have this built in so no user issues)
 
-@todo optimize search dictionary in sections and cut out words that don't 
-start with one of the letters
-@todo create a ui
-@todo create automated testing, more testing ex
-
 @references NYT Spelling Bee Game
 @author Em Nam
 @date 04-23-2024
@@ -30,26 +25,81 @@ start with one of the letters
  @todo limit text field to a certain number of letters?
  @todo get and store the target letter from the selection
  @todo fix width of input sections when resize screen
+
+ @todo optimize search dictionary in sections and cut out words that don't 
+start with one of the letters
+@todo create a ui
+@todo create automated testing, more testing ex
+@todo put toUpperCase() in the same spot for dictionary and for letter arr, target
  */
 
+const MIN_WORD_LENGTH = 3;
+const PANAGRAM_BONUS = 7;
+
+//for reading in text file:
 // const filesystem = require("fs");
 //should store file server side and then access http req?
 // import * as fs from "./fs";
-const MIN_WORD_LENGTH = 4;
-const PANAGRAM_BONUS = 7;
-
 const dictionary = readDictionary("assets/dictionary.txt");
 const dict = document.getElementById("dict");
 // console.log(dictionary);
+//end reading in text file
 
 const letterInput = document.getElementById("letter-input");
 const findWordsBtn = document.getElementById("find-words-btn");
-findWordsBtn.addEventListener("click", findWords);
+const inputForm = document.getElementById("inputs-form");
+const wordListDisplayEl = document.getElementById("word-list-display");
+
+inputForm.addEventListener("submit", findWords);
+// findWordsBtn.addEventListener("click", findWords);
 // letterInput.addEventListener("enter", findWords);
 
-function findWords() {
+/**
+ * Must convert letters to uppercase when read in
+ * @param {*} e
+ */
+function findWords(e) {
+    e.preventDefault();
     console.log("finding words");
-    // console.log(letterInput);
+    console.log(letterInput.value.toUpperCase());
+    let letters = letterInput.value.toUpperCase();
+    let target = ""; //placeholder until target functionality
+    //miniDicct will be replaced with read in text file
+    const wordsWithTarget = generateAllWordsWithTarget(
+        letters,
+        miniDict,
+        target
+    );
+    console.log(wordsWithTarget);
+
+    const valid = instantiateAllValidWords(wordsWithTarget, letters);
+    valid.sort(compareByScore);
+    console.log(valid);
+    console.log(`size valid: ${valid.length}`);
+    console.log(`size init: ${wordsWithTarget.length}`);
+
+    //this will be redundant probably?, use in the display funct to mark (Is In conditional)
+    const panagrams = returnAllPanagrams(valid);
+    console.log(panagrams);
+
+    console.log("displaying words:");
+    displayWords(valid);
+}
+
+function displayWords(validWordList) {
+    for (let i = 0; i < validWordList.length; i++) {
+        const currWord = validWordList[i];
+        let str = "";
+        console.log(validWordList[i]);
+
+        const newWord = document.createElement("dd");
+        str = str + currWord.word;
+        if (currWord.isPanagram) {
+            // newWord.innerText.appendChild("P");
+        }
+        newWord.innerText = str;
+        wordListDisplayEl.appendChild(newWord);
+    }
 }
 
 /**
@@ -164,8 +214,8 @@ function checkIsPanagram(word, letters) {
  */
 function readDictionary(file) {
     sendXMLHttpRequest("GET", file, null, (response) => {
-        dict.innerText = response.toString().toUpperCase().split("\n");
-        return response.toString().toUpperCase().split("\n");
+        // dict.innerText = response.toString().toUpperCase().split("\n");
+        return response.toString().split("\n"); //don't need toUpper b/c handle in genAllWords
     });
 }
 
@@ -185,7 +235,9 @@ function sendXMLHttpRequest(type, url, data, callback) {
  *      and generate and return an array of these words. Valid created words
  *      must be made of only the given letters. Letters can be reused as many times
  *      as per NYT Spelling Bee rules. The valid created words must also contain
- *      the target letter at least once
+ *      the target letter at least once, compares dictionary and letters give in 
+        uppercase, dict can be any case, letters must be uppercase before being 
+        passed in
  * @param {*} letters array of available letters
  * @param {*} dict array of possible valid words
  * @param {*} target the letter that must appear in the word
@@ -194,7 +246,9 @@ function sendXMLHttpRequest(type, url, data, callback) {
 function generateAllWordsWithTarget(letters, dict, target) {
     const words = [];
     for (let i = 0; i < dict.length; i++) {
-        if (checkWordWithTarget(letters, dict[i], target, false)) {
+        if (
+            checkWordWithTarget(letters, dict[i].toUpperCase(), target, false)
+        ) {
             words.push(dict[i]);
         }
     }
@@ -252,13 +306,13 @@ const miniDict = [
     "tata",
 ];
 
-const wordsTargetMini = generateAllWordsWithTarget(
-    miniLetters,
-    miniDict,
-    miniTarget
-);
-console.log("Words with target");
-console.log(wordsTargetMini);
+// const wordsTargetMini = generateAllWordsWithTarget(
+//     miniLetters,
+//     miniDict,
+//     miniTarget
+// );
+// console.log("Words with target");
+// console.log(wordsTargetMini);
 
 // const wordsTarget = generateAllWordsWithTarget(letters, dictionary, target);
 // console.log(wordsTarget);
@@ -269,7 +323,7 @@ console.log(wordsTargetMini);
 // console.log(`size valid: ${valid.length}`);
 // console.log(`size init: ${wordsTarget.length}`);
 
-// const panagrams = returnAllPanagrams(valid, letters);
+// const panagrams = returnAllPanagrams(valid);
 // console.log(panagrams);
 
 //*************************************************************************//
