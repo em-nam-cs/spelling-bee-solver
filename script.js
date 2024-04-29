@@ -134,7 +134,7 @@ function findWords(e) {
     console.log(wordsWithTarget);
 
     const valid = instantiateAllValidWords(wordsWithTarget, letters);
-    valid.sort(firstBy(compareByLength).thenBy(compareByScore));
+    valid.sort(firstBy(compareByWord).thenBy(compareByScore));
     // valid.sort(firstBy(compareByWord));
     // valid.sort(compareByWord);
 
@@ -150,12 +150,15 @@ function findWords(e) {
     displayWords(valid);
 }
 
+/**
+ * @param {*} validWordList 
+ */
 function displayWords(validWordList) {
     let currLen = validWordList[0].numLetters + 1;
     for (let i = 0; i < validWordList.length; i++) {
-        if (currLen > validWordList[i].numLetters){
+        if (currLen != validWordList[i].numLetters){
+            //create a new section if word length decreases
             currLen = validWordList[i].numLetters;
-            //create a new section
             const newTerm = document.createElement("dt");
             newTerm.innerText = `${currLen} Letter Words:`;
             wordListDisplayEl.appendChild(newTerm);
