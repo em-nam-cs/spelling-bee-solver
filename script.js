@@ -22,27 +22,24 @@ Note: Words and letters are compared in uppercase
 */
 
 /**
- * @todo hidden class for "select target", when no letters are entered yet
- @todo hidden class for "Valid words" and <hr> when not submitted
- @todo highlight chosen target word by adding or removing the class target
- @todo get letters from the input box when click find words or enter in the text input
- @todo get and store the letters in an array
- @todo create new DOM html elements for each letter upon any change in text field
- @todo limit text field to a certain number of letters? (preent recursion from breaking)
- @todo get and store the target letter from the selection
- @todo fix width of input sections when resize screen
+@todo put toUpperCase() in the same spot for dictionary and for letter arr, target (put as soon as it is read in)
+@todo hidden class for "select target", when no letters are entered yet
+@todo hidden class for "Valid words" and <hr> when not submitted
+@todo highlight chosen target word by adding or removing the class target
+@todo create new DOM html elements for each letter upon any change in text field
+@todo get and store the target letter from the selection
+@todo display does not reset and words just get added if form submitted multiple times in a row (need a reset function before display)
 
+ @todo limit text field to a certain number of letters? (preent recursion from breaking) 
+ @todo fix width of input sections when resize screen
  @todo optimize search dictionary in sections and cut out words that don't 
 start with one of the letters
 @todo create automated testing, more testing ex
-@todo put toUpperCase() in the same spot for dictionary and for letter arr, target (put as soon as it is read in)
-@todo display does not reset and words just get added if form submitted multiple times in a row (need a reset function before display)
 @todo put the firstBy, ThenBy code into module?
+@todo let user choose how to sort
+@todo change the heading based on what is being sorted first
 */
 
-/**
- @todo change the heading based on what is being sorted first
- */
 
 const MIN_WORD_LENGTH = 2;
 const PANAGRAM_BONUS = 7;
@@ -137,7 +134,7 @@ function findWords(e) {
     console.log(wordsWithTarget);
 
     const valid = instantiateAllValidWords(wordsWithTarget, letters);
-    valid.sort(firstBy(compareByWord).thenBy(compareByScore));
+    valid.sort(firstBy(compareByLength).thenBy(compareByScore)); 
     // valid.sort(compareByWord);   //does not work as expected
 
     console.log(valid);
