@@ -22,25 +22,29 @@ Note: Words and letters are compared in uppercase
 */
 
 /**
- * @todo hidden class for select target when no letters are entered yet
+ * @todo hidden class for "select target", when no letters are entered yet
+ @todo hidden class for "Valid words" and <hr> when not submitted
  @todo highlight chosen target word by adding or removing the class target
  @todo get letters from the input box when click find words or enter in the text input
  @todo get and store the letters in an array
  @todo create new DOM html elements for each letter upon any change in text field
- @todo limit text field to a certain number of letters?
+ @todo limit text field to a certain number of letters? (preent recursion from breaking)
  @todo get and store the target letter from the selection
  @todo fix width of input sections when resize screen
 
  @todo optimize search dictionary in sections and cut out words that don't 
 start with one of the letters
-@todo create a ui
 @todo create automated testing, more testing ex
 @todo put toUpperCase() in the same spot for dictionary and for letter arr, target (put as soon as it is read in)
 @todo display does not reset and words just get added if form submitted multiple times in a row (need a reset function before display)
 @todo put the firstBy, ThenBy code into module?
+*/
+
+/**
+ @todo change the heading based on what is being sorted first
  */
 
-const MIN_WORD_LENGTH = 3;
+const MIN_WORD_LENGTH = 2;
 const PANAGRAM_BONUS = 7;
 
 /*** Copyright 2020 Teun Duynstee Licensed under the Apache License, Version 2.0 ***/
@@ -109,7 +113,6 @@ const dict = document.getElementById("dict");
 //end reading in text file
 
 const letterInput = document.getElementById("letter-input");
-const findWordsBtn = document.getElementById("find-words-btn");
 const inputForm = document.getElementById("inputs-form");
 const wordListDisplayEl = document.getElementById("word-list-display");
 
@@ -125,24 +128,24 @@ function findWords(e) {
     console.log(letterInput.value.toUpperCase());
     let letters = letterInput.value.toUpperCase();
     let target = ""; //placeholder until target functionality
-    //miniDicct will be replaced with read in text file
+
     const wordsWithTarget = generateAllWordsWithTarget(
         letters,
-        miniDict,
+        miniDict, //miniDicct will be replaced with read in text file
         target
     );
     console.log(wordsWithTarget);
 
     const valid = instantiateAllValidWords(wordsWithTarget, letters);
     valid.sort(firstBy(compareByWord).thenBy(compareByScore));
-    // valid.sort(firstBy(compareByWord));
-    // valid.sort(compareByWord);
+    // valid.sort(compareByWord);   //does not work as expected
 
     console.log(valid);
     console.log(`size valid: ${valid.length}`);
     console.log(`size init: ${wordsWithTarget.length}`);
 
     //this will be redundant probably?, use in the display funct to mark (Is In conditional)
+    //maybe if user wants to only display panagrams, or have them listed at the top
     const panagrams = returnAllPanagrams(valid);
     console.log(panagrams);
 
@@ -151,23 +154,30 @@ function findWords(e) {
 }
 
 /**
- * @param {*} validWordList 
+ * @param {*} validWordList
  */
 function displayWords(validWordList) {
+
+    if (validWordList.length == 0) {
+        const newHeading = document.createElement("h3");
+        newHeading.innerText = "No Words Found";
+        wordListDisplayEl.appendChild(newHeading);
+        return;
+    }
+
     let currLen = validWordList[0].numLetters + 1;
     for (let i = 0; i < validWordList.length; i++) {
-        if (currLen != validWordList[i].numLetters){
-            //create a new section if word length decreases
+        if (currLen != validWordList[i].numLetters) {
+            //create a new section if word length changes
             currLen = validWordList[i].numLetters;
             const newTerm = document.createElement("dt");
             newTerm.innerText = `${currLen} Letter Words:`;
             wordListDisplayEl.appendChild(newTerm);
         }
-        const currWord = validWordList[i];
-        let str = "";
 
         const newWord = document.createElement("dd");
-        str = str + currWord.word + ` (${currWord.score}) `;
+        const currWord = validWordList[i];
+        let str = currWord.word + ` (${currWord.score}) `;
         if (currWord.isPanagram) {
             str = str + " * ";
         }
