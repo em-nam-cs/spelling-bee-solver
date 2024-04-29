@@ -36,12 +36,70 @@ start with one of the letters
 @todo create a ui
 @todo create automated testing, more testing ex
 @todo put toUpperCase() in the same spot for dictionary and for letter arr, target (put as soon as it is read in)
+@todo display does not reset and words just get added if form submitted multiple times in a row (need a reset function before display)
  */
 
 const MIN_WORD_LENGTH = 3;
 const PANAGRAM_BONUS = 7;
 
+/*** Copyright 2020 Teun Duynstee Licensed under the Apache License, Version 2.0 ***/
+!(function (n, t) {
+    "function" == typeof define && define.amd
+        ? define([], t)
+        : "object" == typeof exports
+        ? (module.exports = t())
+        : (n.firstBy = t());
+})(this, function () {
+    function s(n) {
+        return n;
+    }
+    function y(n) {
+        return "string" == typeof n ? n.toLowerCase() : n;
+    }
+    function p(n, t) {
+        var e,
+            i,
+            o,
+            r,
+            f,
+            u = "function" == typeof this && !this.firstBy && this,
+            c =
+                ((t = "object" == typeof (t = t) ? t : { direction: t }),
+                "function" != typeof (e = n) &&
+                    ((i = e),
+                    (e = function (n) {
+                        return n[i] || "";
+                    })),
+                1 === e.length &&
+                    ((o = e),
+                    (r = t.ignoreCase ? y : s),
+                    (f =
+                        t.cmp ||
+                        function (n, t) {
+                            return n < t ? -1 : t < n ? 1 : 0;
+                        }),
+                    (e = function (n, t) {
+                        return f(r(o(n)), r(o(t)));
+                    })),
+                t.direction in { "-1": "", desc: "" }
+                    ? function (n, t) {
+                          return -e(n, t);
+                      }
+                    : e),
+            t = u
+                ? function (n, t) {
+                      return u(n, t) || c(n, t);
+                  }
+                : c;
+        return (t.thenBy = p), t;
+    }
+    return (p.firstBy = p);
+});
+
+//End
+
 //for reading in text file:
+// var firstBy = require("thenby"); //same issue with importing module
 // const filesystem = require("fs");
 //should store file server side and then access http req?
 // import * as fs from "./fs";
@@ -76,7 +134,10 @@ function findWords(e) {
     console.log(wordsWithTarget);
 
     const valid = instantiateAllValidWords(wordsWithTarget, letters);
-    valid.sort(compareByScore);
+    valid.sort(firstBy(compareByLength).thenBy(compareByScore));
+    // valid.sort(firstBy(compareByWord));
+    // valid.sort(compareByWord);
+
     console.log(valid);
     console.log(`size valid: ${valid.length}`);
     console.log(`size init: ${wordsWithTarget.length}`);
@@ -134,6 +195,28 @@ function compareByScore(a, b) {
 }
 
 /**
+ * comparison function that sorts in desc order with the highest score first
+ * @param {*} a first ValidWord
+ * @param {*} b second ValidWord
+ * @returns negative if the second word length lower, postive if second word is
+        a longer length, 0 if both words have the same length
+ */
+function compareByLength(a, b) {
+    return b.numLetters - a.numLetters;
+}
+
+/**
+ * comparison function that sorts in desc order with the highest score first
+ * @param {*} a first ValidWord
+ * @param {*} b second ValidWord
+ * @returns negative if the second word scores lower, postive if second word is
+        a higher score, 0 if both words have the same score
+ */
+function compareByWord(a, b) {
+    return a.word - b.word;
+}
+
+/**
  * for each word that is possible to be created, create a new ValidWord object
         that stores information about the word (the string, if panagram, length
         and the score). Based on NYT, a valid word must be at least the 
@@ -186,7 +269,7 @@ function returnAllPanagrams(wordList) {
  */
 function calcScore(word, isPanagram) {
     const len = word.length;
-    let lenPoints = 0;    
+    let lenPoints = 0;
     if (len < MIN_WORD_LENGTH) {
         lenPoints = 0;
     } else if (len == MIN_WORD_LENGTH) {
@@ -195,7 +278,7 @@ function calcScore(word, isPanagram) {
         lenPoints = len;
     }
 
-    return lenPoints + (PANAGRAM_BONUS * isPanagram);
+    return lenPoints + PANAGRAM_BONUS * isPanagram;
 }
 
 /**
@@ -304,13 +387,13 @@ function checkWordWithTarget(letters, word, target, valid) {
 const miniDict = [
     "ACT",
     "CAT",
-    "TACT",
     "CATTY",
     "CT",
     "FALSE",
     "BLACNK",
     "ACTION",
     "TATA",
+    "TACT",
 ];
 
 // const wordsTargetMini = generateAllWordsWithTarget(
