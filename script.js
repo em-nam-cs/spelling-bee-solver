@@ -92,8 +92,9 @@ function displayWords(validWordList) {
 
         const newWord = document.createElement("dd");
         str = str + currWord.word;
+        str = str + ` (${currWord.score}) `;
         if (currWord.isPanagram) {
-            str = str + " P ";
+            str = str + " * ";
         }
         console.log(str);
         newWord.innerText = str;
