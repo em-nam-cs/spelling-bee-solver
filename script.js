@@ -7,6 +7,11 @@
     If no target chosen, include all words and all possible words are valid 
     because an empty string/empty target can be considered to be in all words
 
+    If the minimum word length is the same or greater than the number of letters
+    provided to use, the scoring will still award a bonus for a panagram 
+    (ex. with letters="act", target="c", the score would be 1 + PanagramBonus
+    for the word "cat" even though it is only the minimum number of letters)
+
 
 Note: Words and letters are compared in uppercase 
 (have this built in so no user issues)
@@ -181,13 +186,16 @@ function returnAllPanagrams(wordList) {
  */
 function calcScore(word, isPanagram) {
     const len = word.length;
+    let lenPoints = 0;    
     if (len < MIN_WORD_LENGTH) {
-        return 0;
+        lenPoints = 0;
     } else if (len == MIN_WORD_LENGTH) {
-        return 1;
+        lenPoints = 1;
     } else {
-        return len + PANAGRAM_BONUS * isPanagram;
+        lenPoints = len;
     }
+
+    return lenPoints + (PANAGRAM_BONUS * isPanagram);
 }
 
 /**
@@ -216,7 +224,7 @@ function checkIsPanagram(word, letters) {
 function readDictionary(file) {
     sendXMLHttpRequest("GET", file, null, (response) => {
         // dict.innerText = response.toString().toUpperCase().split("\n");
-        return response.toString().toUpperCase().split("\n"); 
+        return response.toString().toUpperCase().split("\n");
     });
 }
 
@@ -246,9 +254,7 @@ function sendXMLHttpRequest(type, url, data, callback) {
 function generateAllWordsWithTarget(letters, dict, target) {
     const words = [];
     for (let i = 0; i < dict.length; i++) {
-        if (
-            checkWordWithTarget(letters, dict[i], target, false)
-        ) {
+        if (checkWordWithTarget(letters, dict[i], target, false)) {
             words.push(dict[i]);
         }
     }
