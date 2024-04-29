@@ -30,7 +30,7 @@ Note: Words and letters are compared in uppercase
 start with one of the letters
 @todo create a ui
 @todo create automated testing, more testing ex
-@todo put toUpperCase() in the same spot for dictionary and for letter arr, target
+@todo put toUpperCase() in the same spot for dictionary and for letter arr, target (put as soon as it is read in)
  */
 
 const MIN_WORD_LENGTH = 3;
@@ -51,8 +51,6 @@ const inputForm = document.getElementById("inputs-form");
 const wordListDisplayEl = document.getElementById("word-list-display");
 
 inputForm.addEventListener("submit", findWords);
-// findWordsBtn.addEventListener("click", findWords);
-// letterInput.addEventListener("enter", findWords);
 
 /**
  * Must convert letters to uppercase when read in
@@ -95,8 +93,9 @@ function displayWords(validWordList) {
         const newWord = document.createElement("dd");
         str = str + currWord.word;
         if (currWord.isPanagram) {
-            // newWord.innerText.appendChild("P");
+            str = str + " P ";
         }
+        console.log(str);
         newWord.innerText = str;
         wordListDisplayEl.appendChild(newWord);
     }
@@ -192,7 +191,8 @@ function calcScore(word, isPanagram) {
 
 /**
  * returns if a given word is considered a panagram and uses all of the given
- *      letters
+ *      letters, 
+    assumes that the word and letters are in a matching case
  * @param {*} word string, word that is being checked
  * @param {*} letters array of letters that need to appear in word
  * @returns boolean, true if all the letters are in the word, false otherwise
@@ -208,14 +208,14 @@ function checkIsPanagram(word, letters) {
 
 /**
  * reads a list of words from a text file and returns array
- *      assume that each word is deliniated by a newline
+ * assumes that each word is deliniated by a newline
  * @param {*} file name of the path/file that is being read in
  * @returns an array that stores all of the words in the file in lowercase
  */
 function readDictionary(file) {
     sendXMLHttpRequest("GET", file, null, (response) => {
         // dict.innerText = response.toString().toUpperCase().split("\n");
-        return response.toString().split("\n"); //don't need toUpper b/c handle in genAllWords
+        return response.toString().toUpperCase().split("\n"); 
     });
 }
 
@@ -235,9 +235,8 @@ function sendXMLHttpRequest(type, url, data, callback) {
  *      and generate and return an array of these words. Valid created words
  *      must be made of only the given letters. Letters can be reused as many times
  *      as per NYT Spelling Bee rules. The valid created words must also contain
- *      the target letter at least once, compares dictionary and letters give in 
-        uppercase, dict can be any case, letters must be uppercase before being 
-        passed in
+ *      the target letter at least once, 
+    assumes that the word and letters are in a matching case
  * @param {*} letters array of available letters
  * @param {*} dict array of possible valid words
  * @param {*} target the letter that must appear in the word
@@ -247,7 +246,7 @@ function generateAllWordsWithTarget(letters, dict, target) {
     const words = [];
     for (let i = 0; i < dict.length; i++) {
         if (
-            checkWordWithTarget(letters, dict[i].toUpperCase(), target, false)
+            checkWordWithTarget(letters, dict[i], target, false)
         ) {
             words.push(dict[i]);
         }
@@ -292,18 +291,19 @@ function checkWordWithTarget(letters, word, target, valid) {
 // const target = "U";
 // const letters = ["T", "O", "L", "B", "K", "I", "N"];
 // const target = "B";
-const miniLetters = ["c", "a", "t"];
-const miniTarget = "a";
+// const miniLetters = ["c", "a", "t"];
+// const miniTarget = "a";
+
 const miniDict = [
-    "act",
-    "cat",
-    "tact",
-    "catty",
-    "ct",
-    "false",
-    "blank",
-    "action",
-    "tata",
+    "ACT",
+    "CAT",
+    "TACT",
+    "CATTY",
+    "CT",
+    "FALSE",
+    "BLACNK",
+    "ACTION",
+    "TATA",
 ];
 
 // const wordsTargetMini = generateAllWordsWithTarget(
