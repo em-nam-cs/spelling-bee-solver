@@ -37,6 +37,7 @@ start with one of the letters
 @todo create automated testing, more testing ex
 @todo put toUpperCase() in the same spot for dictionary and for letter arr, target (put as soon as it is read in)
 @todo display does not reset and words just get added if form submitted multiple times in a row (need a reset function before display)
+@todo put the firstBy, ThenBy code into module?
  */
 
 const MIN_WORD_LENGTH = 3;
@@ -95,11 +96,10 @@ const PANAGRAM_BONUS = 7;
     }
     return (p.firstBy = p);
 });
-
 //End
 
 //for reading in text file:
-// var firstBy = require("thenby"); //same issue with importing module
+// var firstBy = require("thenby"); //same issue with importing module fs
 // const filesystem = require("fs");
 //should store file server side and then access http req?
 // import * as fs from "./fs";
@@ -151,18 +151,27 @@ function findWords(e) {
 }
 
 function displayWords(validWordList) {
+    let currLen = validWordList[0].numLetters;
+    const newTerm = document.createElement("dt");
+    newTerm.innerText = `${currLen} Letter Words:`;
+    wordListDisplayEl.appendChild(newTerm);
+
     for (let i = 0; i < validWordList.length; i++) {
+        if (currLen > validWordList[i].numLetters){
+            currLen = validWordList[i].numLetters;
+            //create a new section
+            const newTerm = document.createElement("dt");
+            newTerm.innerText = `${currLen} Letter Words:`;
+            wordListDisplayEl.appendChild(newTerm);
+        }
         const currWord = validWordList[i];
         let str = "";
-        console.log(validWordList[i]);
 
         const newWord = document.createElement("dd");
-        str = str + currWord.word;
-        str = str + ` (${currWord.score}) `;
+        str = str + currWord.word + ` (${currWord.score}) `;
         if (currWord.isPanagram) {
             str = str + " * ";
         }
-        console.log(str);
         newWord.innerText = str;
         wordListDisplayEl.appendChild(newWord);
     }
