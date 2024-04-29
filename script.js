@@ -151,11 +151,7 @@ function findWords(e) {
 }
 
 function displayWords(validWordList) {
-    let currLen = validWordList[0].numLetters;
-    const newTerm = document.createElement("dt");
-    newTerm.innerText = `${currLen} Letter Words:`;
-    wordListDisplayEl.appendChild(newTerm);
-
+    let currLen = validWordList[0].numLetters + 1;
     for (let i = 0; i < validWordList.length; i++) {
         if (currLen > validWordList[i].numLetters){
             currLen = validWordList[i].numLetters;
