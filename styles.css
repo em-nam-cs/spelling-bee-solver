@@ -95,3 +95,7 @@ button {
 h1 {
     color: var(--accent-color);
 }
+
+.hidden {
+    display: none;
+}

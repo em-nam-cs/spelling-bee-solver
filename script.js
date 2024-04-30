@@ -111,8 +111,11 @@ const dict = document.getElementById("dict");
 const letterInput = document.getElementById("letter-input");
 const inputForm = document.getElementById("inputs-form");
 const wordListDisplayEl = document.getElementById("word-list-display");
+const resetBtn = document.getElementById("reset-btn");
+const wordListTitleEl = document.getElementById("word-list-title");
 
 inputForm.addEventListener("submit", findWords);
+resetBtn.addEventListener("click", clearDisplay);
 
 /**
  * Must convert letters to uppercase when read in
@@ -147,6 +150,10 @@ function findWords(e) {
  */
 function displayWords(validWordList) {
     console.log("displaying words:");
+
+    clearDisplay(); //clears previous results
+    
+    wordListTitleEl.classList.remove("hidden");
     if (validWordList.length == 0) {
         const newHeading = document.createElement("h3");
         newHeading.innerText = "No Words Found";
@@ -172,6 +179,18 @@ function displayWords(validWordList) {
         }
         newWord.innerText = str;
         wordListDisplayEl.appendChild(newWord);
+    }
+}
+
+/**
+ * removes all of the html elements in the wordListDisplay and hides the title
+ * to clear the results from the display
+ */
+function clearDisplay() {
+    console.log("clearing display");
+    wordListTitleEl.classList.add("hidden");
+    while (wordListDisplayEl.firstChild) {
+        wordListDisplayEl.removeChild(wordListDisplayEl.lastChild);
     }
 }
 
