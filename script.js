@@ -22,6 +22,8 @@ Note: Words and letters are compared in uppercase
 */
 
 /**
+@todo on any change in lettersInput, the hr/valid words title hidden
+
 @todo put toUpperCase() in the same spot for dictionary and for letter arr, target (put as soon as it is read in)
 @todo hidden class for "select target", when no letters are entered yet
 @todo hidden class for "Valid words" and <hr> when not submitted
@@ -38,6 +40,8 @@ start with one of the letters
 @todo put the firstBy, ThenBy code into module?
 @todo let user choose how to sort
 @todo change the heading based on what is being sorted first
+
+
 */
 
 const MIN_WORD_LENGTH = 2;
@@ -121,33 +125,37 @@ resetBtn.addEventListener("click", reset); //eventually on reset, reset inputs t
 letterInput.addEventListener("input", handleLetterInput);
 
 function reset() {
-    clearDisplay(wordListDisplayEl);
+    clearWordListDisplay();
     //clearDisplay(input);
 }
 
+function selectTarget() {}
+
 //todo: prevent duplicate letters from showing in targets
 //todo function when select target
-function handleLetterInput(e) {
-    console.log("handling letter input");
-    console.log(e);
-    console.log(letterInput.value);
+/**
+ * each time the text input of the letters is changed, update the target options
+ * to match the possible options for the target
 
-    clearDisplay(targetBtnContainer);
+ * because cases when arrowkeys, cursor, highlighting change creates ambiguity
+ * to the order and of which character is input/removed to the letters, read 
+ * result of letterInput each change and fully update instead of 
+ * only add/removing the single change
+ */
+function handleLetterInput() {
+    console.log("handling letter input");
+
+    clearTargetDisplay();
 
     const letters = letterInput.value;
-
     for (let i = 0; i < letters.length; i++) {
         const newLetter = document.createElement("input");
         newLetter.type = "button";
         newLetter.className = "target-input";
         newLetter.value = letters[i].toUpperCase();
+        // newLetter.addEventListener("click", )
         targetBtnContainer.appendChild(newLetter);
     }
-
-    //could add each target button as input, and remove if find backspace but
-    //what about the case when arrow keys/cursor/highlight used and then backspace (don't know which char to remove)
-    //or where in string char is input
-    //check input value each time and just refresh
 }
 
 /**
@@ -184,7 +192,7 @@ function findWords(e) {
 function displayWords(validWordList) {
     console.log("displaying words:");
 
-    clearDisplay(wordListDisplayEl); //clears previous results
+    clearWordListDisplay(); //clears previous results
 
     lineBreakEl.classList.remove("hidden");
     wordListTitleEl.classList.remove("hidden");
@@ -220,12 +228,20 @@ function displayWords(validWordList) {
  * removes all of the html elements in the wordListDisplay and hides the title
  * to clear the results from the display
  */
-function clearDisplay(parent) {
-    console.log("clearing display");
+function clearTargetDisplay() {
+    console.log("clearing target display");
+    while (targetBtnContainer.firstChild) {
+        targetBtnContainer.removeChild(targetBtnContainer.lastChild);
+        targetBtnContainer.lastChild = null; //garbage collect event handlers
+    }
+}
+
+function clearWordListDisplay() {
+    console.log("clearing word list display");
     lineBreakEl.classList.add("hidden");
     wordListTitleEl.classList.add("hidden");
-    while (parent.firstChild) {
-        parent.removeChild(parent.lastChild);
+    while (wordListDisplayEl.firstChild) {
+        wordListDisplayEl.removeChild(wordListDisplayEl.lastChild);
     }
 }
 
