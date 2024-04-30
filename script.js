@@ -114,9 +114,41 @@ const wordListDisplayEl = document.getElementById("word-list-display");
 const resetBtn = document.getElementById("reset-btn");
 const wordListTitleEl = document.getElementById("word-list-title");
 const lineBreakEl = document.getElementById("line-break");
+const targetBtnContainer = document.getElementById("target-btn-container");
 
 inputForm.addEventListener("submit", findWords);
-resetBtn.addEventListener("click", clearDisplay); //eventually on reset, reset inputs too not just display
+resetBtn.addEventListener("click", reset); //eventually on reset, reset inputs too not just display
+letterInput.addEventListener("input", handleLetterInput);
+
+function reset() {
+    clearDisplay(wordListDisplayEl);
+    //clearDisplay(input);
+}
+
+//todo: prevent duplicate letters from showing in targets
+//todo function when select target
+function handleLetterInput(e) {
+    console.log("handling letter input");
+    console.log(e);
+    console.log(letterInput.value);
+
+    clearDisplay(targetBtnContainer);
+
+    const letters = letterInput.value;
+
+    for (let i = 0; i < letters.length; i++) {
+        const newLetter = document.createElement("input");
+        newLetter.type = "button";
+        newLetter.className = "target-input";
+        newLetter.value = letters[i].toUpperCase();
+        targetBtnContainer.appendChild(newLetter);
+    }
+
+    //could add each target button as input, and remove if find backspace but
+    //what about the case when arrow keys/cursor/highlight used and then backspace (don't know which char to remove)
+    //or where in string char is input
+    //check input value each time and just refresh
+}
 
 /**
  * Must convert letters to uppercase when read in
@@ -152,7 +184,7 @@ function findWords(e) {
 function displayWords(validWordList) {
     console.log("displaying words:");
 
-    clearDisplay(); //clears previous results
+    clearDisplay(wordListDisplayEl); //clears previous results
 
     lineBreakEl.classList.remove("hidden");
     wordListTitleEl.classList.remove("hidden");
@@ -188,12 +220,12 @@ function displayWords(validWordList) {
  * removes all of the html elements in the wordListDisplay and hides the title
  * to clear the results from the display
  */
-function clearDisplay() {
+function clearDisplay(parent) {
     console.log("clearing display");
     lineBreakEl.classList.add("hidden");
     wordListTitleEl.classList.add("hidden");
-    while (wordListDisplayEl.firstChild) {
-        wordListDisplayEl.removeChild(wordListDisplayEl.lastChild);
+    while (parent.firstChild) {
+        parent.removeChild(parent.lastChild);
     }
 }
 
