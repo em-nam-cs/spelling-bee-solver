@@ -40,7 +40,6 @@ start with one of the letters
 @todo change the heading based on what is being sorted first
 */
 
-
 const MIN_WORD_LENGTH = 2;
 const PANAGRAM_BONUS = 7;
 
@@ -122,7 +121,6 @@ inputForm.addEventListener("submit", findWords);
 function findWords(e) {
     e.preventDefault();
     console.log("finding words");
-    console.log(letterInput.value.toUpperCase());
     let letters = letterInput.value.toUpperCase();
     let target = ""; //placeholder until target functionality
 
@@ -131,22 +129,16 @@ function findWords(e) {
         miniDict, //miniDicct will be replaced with read in text file
         target
     );
-    console.log(wordsWithTarget);
 
     const valid = instantiateAllValidWords(wordsWithTarget, letters);
-    valid.sort(firstBy(compareByLength).thenBy(compareByScore)); 
-    // valid.sort(compareByWord);   //does not work as expected
-
-    console.log(valid);
-    console.log(`size valid: ${valid.length}`);
-    console.log(`size init: ${wordsWithTarget.length}`);
+    valid.sort(
+        firstBy(compareByLength).thenBy(compareByScore).thenBy(compareByWord)
+    );
 
     //this will be redundant probably?, use in the display funct to mark (Is In conditional)
     //maybe if user wants to only display panagrams, or have them listed at the top
     const panagrams = returnAllPanagrams(valid);
-    console.log(panagrams);
-
-    console.log("displaying words:");
+    //end
     displayWords(valid);
 }
 
@@ -154,7 +146,7 @@ function findWords(e) {
  * @param {*} validWordList
  */
 function displayWords(validWordList) {
-
+    console.log("displaying words:");
     if (validWordList.length == 0) {
         const newHeading = document.createElement("h3");
         newHeading.innerText = "No Words Found";
@@ -228,7 +220,7 @@ function compareByLength(a, b) {
         a higher score, 0 if both words have the same score
  */
 function compareByWord(a, b) {
-    return a.word - b.word;
+    return a.word.localeCompare(b.word);
 }
 
 /**
@@ -400,8 +392,9 @@ function checkWordWithTarget(letters, word, target, valid) {
 // const miniTarget = "a";
 
 const miniDict = [
-    "ACT",
+    "TAT",
     "CAT",
+    "ACT",
     "CATTY",
     "CT",
     "FALSE",
