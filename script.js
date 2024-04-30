@@ -136,7 +136,23 @@ function reset() {
     //clearDisplay(input);
 }
 
-function selectTarget() {}
+/**
+ * Set the target to the clicked input, remove previous target (if any)
+ * @param {*} e the event where the click originated from (indicates new
+        current target)
+ */
+function selectTarget(e) {
+    console.log("CLICKED");
+
+    //find previous target (if exists) and remove
+    const prevTarget = document.getElementsByClassName("target");
+    if (prevTarget[0]) {
+        prevTarget[0].classList.remove("target");
+    }
+
+    //set newly clicked to target
+    e.explicitOriginalTarget.classList.add("target");
+}
 
 /**
  * each time the text input of the letters is changed, update the target options
@@ -165,7 +181,7 @@ function handleLetterInput() {
         newLetter.type = "button";
         newLetter.className = "target-input";
         newLetter.value = letters[i].toUpperCase();
-        // newLetter.addEventListener("click", )
+        newLetter.addEventListener("click", selectTarget);
         targetBtnContainer.appendChild(newLetter);
     }
 }
