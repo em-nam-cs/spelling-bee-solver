@@ -113,9 +113,10 @@ const inputForm = document.getElementById("inputs-form");
 const wordListDisplayEl = document.getElementById("word-list-display");
 const resetBtn = document.getElementById("reset-btn");
 const wordListTitleEl = document.getElementById("word-list-title");
+const lineBreakEl = document.getElementById("line-break");
 
 inputForm.addEventListener("submit", findWords);
-resetBtn.addEventListener("click", clearDisplay);
+resetBtn.addEventListener("click", clearDisplay); //eventually on reset, reset inputs too not just display
 
 /**
  * Must convert letters to uppercase when read in
@@ -152,7 +153,8 @@ function displayWords(validWordList) {
     console.log("displaying words:");
 
     clearDisplay(); //clears previous results
-    
+
+    lineBreakEl.classList.remove("hidden");
     wordListTitleEl.classList.remove("hidden");
     if (validWordList.length == 0) {
         const newHeading = document.createElement("h3");
@@ -188,6 +190,7 @@ function displayWords(validWordList) {
  */
 function clearDisplay() {
     console.log("clearing display");
+    lineBreakEl.classList.add("hidden");
     wordListTitleEl.classList.add("hidden");
     while (wordListDisplayEl.firstChild) {
         wordListDisplayEl.removeChild(wordListDisplayEl.lastChild);
