@@ -18,29 +18,35 @@ Note: Words and letters are compared in uppercase
 
 @references NYT Spelling Bee Game
 @author Em Nam
-@date 04-23-2024
+@date 04-30-2024
 */
 
 /**
-@todo on any change in lettersInput, the hr/valid words title hidden
+@todo create new DOM html elements for each letter upon any change in text field
+    @todo: prevent duplicate letters from showing in targets
+    @todo prevent space from adding to function or input
+    @todo hidden class for "select target", when no letters are entered yet
+
+@todo function when select target (add className "target" see css)
+    @todo get and store the target letter from the selection
+
+@todo prevent spcaing from jumping when remove target and hide selection
+
+@todo ON RESET, reset the input options too
+
 
 @todo put toUpperCase() in the same spot for dictionary and for letter arr, target (put as soon as it is read in)
-@todo hidden class for "select target", when no letters are entered yet
-@todo hidden class for "Valid words" and <hr> when not submitted
 @todo highlight chosen target word by adding or removing the class target
-@todo create new DOM html elements for each letter upon any change in text field
-@todo get and store the target letter from the selection
-@todo display does not reset and words just get added if form submitted multiple times in a row (need a reset function before display)
 
- @todo limit text field to a certain number of letters? (preent recursion from breaking) 
- @todo fix width of input sections when resize screen
- @todo optimize search dictionary in sections and cut out words that don't 
-start with one of the letters
+
+@todo limit text field to a certain number of letters? (preent recursion from breaking) 
+@todo fix width of input sections when resize screen
+@todo optimize search dictionary in sections and cut out words that don't 
+    start with one of the letters
 @todo create automated testing, more testing ex
 @todo put the firstBy, ThenBy code into module?
 @todo let user choose how to sort
 @todo change the heading based on what is being sorted first
-
 
 */
 
@@ -119,6 +125,7 @@ const resetBtn = document.getElementById("reset-btn");
 const wordListTitleEl = document.getElementById("word-list-title");
 const lineBreakEl = document.getElementById("line-break");
 const targetBtnContainer = document.getElementById("target-btn-container");
+const targetInputLabel = document.getElementById("target-input-label");
 
 inputForm.addEventListener("submit", findWords);
 resetBtn.addEventListener("click", reset); //eventually on reset, reset inputs too not just display
@@ -131,8 +138,6 @@ function reset() {
 
 function selectTarget() {}
 
-//todo: prevent duplicate letters from showing in targets
-//todo function when select target
 /**
  * each time the text input of the letters is changed, update the target options
  * to match the possible options for the target
@@ -148,6 +153,13 @@ function handleLetterInput() {
     clearTargetDisplay();
 
     const letters = letterInput.value;
+
+    if (letters.length == 0) {
+        targetInputLabel.classList.add("hidden");
+    } else {
+        targetInputLabel.classList.remove("hidden");
+    }
+
     for (let i = 0; i < letters.length; i++) {
         const newLetter = document.createElement("input");
         newLetter.type = "button";
