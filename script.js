@@ -27,10 +27,6 @@ Note: Words and letters are compared in uppercase
     @todo prevent space from adding to function or input
     @todo hidden class for "select target", when no letters are entered yet
 
-@todo function when select target (add className "target" see css)
-    @todo get and store the target letter from the selection
-    @todo add back hidden class to err msg
-
 @todo prevent spcaing from jumping when remove target and hide selection
 
 @todo ON RESET, reset the input options too
@@ -168,9 +164,12 @@ function selectTarget(e) {
 function handleLetterInput() {
     console.log("handling letter input");
 
-    clearTargetDisplay();
 
-    const letters = letterInput.value;
+    let letters = letterInput.value;
+    letters = letters.replace(/[^a-z]/gmi, "");
+
+
+    clearTargetDisplay();
 
     if (letters.length == 0) {
         targetInputLabel.classList.add("hidden");
@@ -235,7 +234,7 @@ function displayWords(validWordList, targetExists) {
 
     clearWordListDisplay(); //clears previous results
 
-    //hides or displays the target error message 
+    //hides or displays the target error message
     if (targetExists) {
         errorMsgDisplay.classList.add("hidden");
     } else {
@@ -275,7 +274,6 @@ function displayWords(validWordList, targetExists) {
         wordListDisplayEl.appendChild(newWord);
     }
 }
-
 
 /**
  * clears the target dislpay and removes the event handles for each target btn
