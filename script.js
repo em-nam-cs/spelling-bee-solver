@@ -29,6 +29,7 @@ Note: Words and letters are compared in uppercase
 
 @todo function when select target (add className "target" see css)
     @todo get and store the target letter from the selection
+    @todo add back hidden class to err msg
 
 @todo prevent spcaing from jumping when remove target and hide selection
 
@@ -126,6 +127,7 @@ const wordListTitleEl = document.getElementById("word-list-title");
 const lineBreakEl = document.getElementById("line-break");
 const targetBtnContainer = document.getElementById("target-btn-container");
 const targetInputLabel = document.getElementById("target-input-label");
+const errorMsgDisplay = document.getElementById("error-message-display");
 
 inputForm.addEventListener("submit", findWords);
 resetBtn.addEventListener("click", reset); //eventually on reset, reset inputs too not just display
@@ -194,7 +196,18 @@ function findWords(e) {
     e.preventDefault();
     console.log("finding words");
     let letters = letterInput.value.toUpperCase();
-    let target = ""; //placeholder until target functionality
+    let target = "";
+    let targetExists;
+
+    try {
+        target = document.getElementsByClassName("target")[0].value;
+        errorMsgDisplay.classList.add("hidden");
+        targetExists = true;
+    } catch (error) {
+        target = "";
+        targetExists = false;
+        console.log(error.message);
+    }
 
     const wordsWithTarget = generateAllWordsWithTarget(
         letters,
@@ -211,19 +224,29 @@ function findWords(e) {
     //maybe if user wants to only display panagrams, or have them listed at the top
     const panagrams = returnAllPanagrams(valid);
     //end
-    displayWords(valid);
+    displayWords(valid, targetExists);
 }
 
 /**
  * @param {*} validWordList
  */
-function displayWords(validWordList) {
+function displayWords(validWordList, targetExists) {
     console.log("displaying words:");
 
     clearWordListDisplay(); //clears previous results
 
+    //hides or displays the target error message 
+    if (targetExists) {
+        errorMsgDisplay.classList.add("hidden");
+    } else {
+        errorMsgDisplay.classList.remove("hidden");
+    }
+
+    //display the title elements
     lineBreakEl.classList.remove("hidden");
     wordListTitleEl.classList.remove("hidden");
+
+    //display heading if no valid words
     if (validWordList.length == 0) {
         const newHeading = document.createElement("h3");
         newHeading.innerText = "No Words Found";
@@ -231,6 +254,7 @@ function displayWords(validWordList) {
         return;
     }
 
+    //display all the words in the list
     let currLen = validWordList[0].numLetters + 1;
     for (let i = 0; i < validWordList.length; i++) {
         if (currLen != validWordList[i].numLetters) {
@@ -252,9 +276,9 @@ function displayWords(validWordList) {
     }
 }
 
+
 /**
- * removes all of the html elements in the wordListDisplay and hides the title
- * to clear the results from the display
+ * clears the target dislpay and removes the event handles for each target btn
  */
 function clearTargetDisplay() {
     console.log("clearing target display");
@@ -264,10 +288,15 @@ function clearTargetDisplay() {
     }
 }
 
+/**
+ * removes all of the html elements in the wordListDisplay and hides the title
+ * and error messages to clear the results from the display
+ */
 function clearWordListDisplay() {
     console.log("clearing word list display");
     lineBreakEl.classList.add("hidden");
     wordListTitleEl.classList.add("hidden");
+    errorMsgDisplay.classList.add("hidden");
     while (wordListDisplayEl.firstChild) {
         wordListDisplayEl.removeChild(wordListDisplayEl.lastChild);
     }
