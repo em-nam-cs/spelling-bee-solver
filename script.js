@@ -136,7 +136,8 @@ letterInput.addEventListener("input", handleLetterInput);
 
 function reset() {
     clearWordListDisplay();
-    //clearDisplay(input);
+    //have a function that clears input
+    clearInputDisplay(); //debug this!!!
 }
 
 /**
@@ -169,14 +170,20 @@ function selectTarget(e) {
 function handleLetterInput() {
     console.log("handling letter input");
 
-    let letters = letterInput.value;
-    letters = letters.replace(/[^a-z]/gim, "");
+    const input = letterInput.value;
+    const letters = input.replace(/[^a-z]/gim, "");
+    console.log(`${input} v. ${letters}`);
+
+    if (letters != input) {
+        inputErrorMsgDisplay.classList.remove("hidden");
+        inputErrorMsgDisplay.innerText = "Please enter a valid letter";
+    } else {
+        inputErrorMsgDisplay.classList.add("hidden");
+    }
 
     //if needed to remove a letter, display an err msg
 
     letterInput.value = letters;
-
-    console.log(letterInput);
 
     clearTargetDisplay();
 
@@ -240,6 +247,7 @@ function findWords(e) {
 function displayWords(validWordList, targetExists) {
     console.log("displaying words:");
 
+    inputErrorMsgDisplay.classList.add("hidden");   //clears input err msg because done inputting
     clearWordListDisplay(); //clears previous results
 
     //hides or displays the target error message
@@ -281,6 +289,13 @@ function displayWords(validWordList, targetExists) {
         newWord.innerText = str;
         wordListDisplayEl.appendChild(newWord);
     }
+}
+
+
+function clearInputDisplay(){
+    inputErrorMsgDisplay.classList.add("hidden");
+    clearTargetDisplay();
+    letterInput.value = "";
 }
 
 /**
