@@ -20,14 +20,17 @@
             autocomplete="off"
         >
             <div class="letter-input-container">
-
-                
                 <input
                     id="letter-input"
                     type="text"
                     placeholder="Enter Letters Here"
                 />
-                <h3 id="input-error-message-display" class="error-message hidden">Please enter a valid letter</h3>
+                <h3
+                    id="input-error-message-display"
+                    class="error-message hidden"
+                >
+                    Please enter a valid input
+                </h3>
 
                 <div id="target-input-container">
                     <p
@@ -36,9 +39,7 @@
                     >
                         Select Target:
                     </p>
-                    <div id="target-btn-container">
-
-                    </div>
+                    <div id="target-btn-container"></div>
                 </div>
                 <button
                     type="submit"
@@ -65,7 +66,12 @@
             >
                 Valid Words:
             </h1>
-            <h3 id="target-error-message-display" class="error-message hidden">No target was selected</h3>
+            <h3
+                id="target-error-message-display"
+                class="error-message hidden"
+            >
+                No target was selected
+            </h3>
             <dl id="word-list-display"></dl>
         </section>
 

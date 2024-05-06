@@ -162,7 +162,8 @@ function selectTarget(e) {
 }
 
 /**
- * each time the text input of the letters is changed, update the target options
+ * each time the text input of the letters is changed, read in the input and 
+ * update the target options
  * to match the possible options for the target
  * prevent the user from entering invalid characters (nonletters) and from
  * entering duplicates
@@ -175,24 +176,7 @@ function selectTarget(e) {
 function handleLetterInput() {
     console.log("handling letter input");
 
-    //check if any non-alpha characters and remove from input
-    const input = letterInput.value;    //read input
-    const onlyLetters = input.replace(/[^a-z]/gim, ""); //remove non-alpha char
-    letters = removeDuplicates(onlyLetters);    //remove duplicates
-
-    //if needed to remove a letter, display an err msg
-    inputErrorMsgDisplay.classList.remove("hidden");
-    if (onlyLetters != input) {
-        inputErrorMsgDisplay.innerText = "Please enter a valid letter";
-    } else if (letters != onlyLetters){
-        inputErrorMsgDisplay.innerText = "Please enter a unique letter";
-    } else {
-        inputErrorMsgDisplay.classList.add("hidden");
-    }
-
-    
-
-    letterInput.value = letters;
+    readCleanInputLetters();
 
     //clear previous possible targets and then display all letters
     clearTargetDisplay();
@@ -214,8 +198,32 @@ function handleLetterInput() {
 }
 
 /**
+ * read in the input text and make sure it only contains unique letters
+ * set the input text to reflect the cleaned up version and display
+ * error message if needed
+ */
+function readCleanInputLetters() {
+    const input = letterInput.value; //read input
+    const onlyLetters = input.replace(/[^a-z]/gim, ""); //remove non-alpha char
+    letters = removeDuplicates(onlyLetters); //remove duplicates
+
+    //if needed to remove a letter/char, display an err msg
+    inputErrorMsgDisplay.classList.remove("hidden");
+    if (onlyLetters != input) {
+        inputErrorMsgDisplay.innerText = "Please enter a valid letter";
+    } else if (letters != onlyLetters) {
+        inputErrorMsgDisplay.innerText = "Please enter a unique letter";
+    } else {
+        inputErrorMsgDisplay.classList.add("hidden");
+    }
+
+    //update letter input to reflect only the valid input chars
+    letterInput.value = letters;
+}
+
+/**
  * removes duplicate letters from a string
- * 
+ *
  * @param {*} str input string that duplicates will be removed from
  * @returns the input str without duplicate letters (the letter order will be
  *      based on the first occurrence of each letter)
