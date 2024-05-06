@@ -164,6 +164,8 @@ function selectTarget(e) {
 /**
  * each time the text input of the letters is changed, update the target options
  * to match the possible options for the target
+ * prevent the user from entering invalid characters (nonletters) and from
+ * entering duplicates
 
  * because cases when arrowkeys, cursor, highlighting change creates ambiguity
  * to the order and of which character is input/removed to the letters, read 
@@ -174,17 +176,23 @@ function handleLetterInput() {
     console.log("handling letter input");
 
     //check if any non-alpha characters and remove from input
-    const input = letterInput.value;
-    const letters = input.replace(/[^a-z]/gim, "");
-    console.log(`${input} v. ${letters}`);
-    letterInput.value = letters;
+    const input = letterInput.value;    //read input
+    const onlyLetters = input.replace(/[^a-z]/gim, ""); //remove non-alpha char
+    letters = removeDuplicates(onlyLetters);    //remove duplicates
 
     //if needed to remove a letter, display an err msg
-    if (letters != input) {
-        inputErrorMsgDisplay.classList.remove("hidden");
+    inputErrorMsgDisplay.classList.remove("hidden");
+    if (onlyLetters != input) {
+        inputErrorMsgDisplay.innerText = "Please enter a valid letter";
+    } else if (letters != onlyLetters){
+        inputErrorMsgDisplay.innerText = "Please enter a unique letter";
     } else {
         inputErrorMsgDisplay.classList.add("hidden");
     }
+
+    
+
+    letterInput.value = letters;
 
     //clear previous possible targets and then display all letters
     clearTargetDisplay();
@@ -205,6 +213,24 @@ function handleLetterInput() {
     }
 }
 
+/**
+ * removes duplicate letters from a string
+ * 
+ * @param {*} str input string that duplicates will be removed from
+ * @returns the input str without duplicate letters (the letter order will be
+ *      based on the first occurrence of each letter)
+ */
+function removeDuplicates(str) {
+    console.log("removing duplicates");
+    let noDuplicates = "";
+    for (let i = 0; i < str.length; i++) {
+        //if the previous letters already been typed, do not include it
+        if (!noDuplicates.includes(str[i])) {
+            noDuplicates = noDuplicates + str[i];
+        }
+    }
+    return noDuplicates;
+}
 
 /**
  * Must convert letters to uppercase when read in
