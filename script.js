@@ -134,10 +134,13 @@ inputForm.addEventListener("submit", findWords);
 resetBtn.addEventListener("click", reset); //eventually on reset, reset inputs too not just display
 letterInput.addEventListener("input", handleLetterInput);
 
+/**
+ * clears the input and word display outputs, resets the screen to initial
+ * status, with no letters, targets input or words found
+ */
 function reset() {
     clearWordListDisplay();
-    //have a function that clears input
-    clearInputDisplay(); //debug this!!!
+    clearInputDisplay();
 }
 
 /**
@@ -170,21 +173,20 @@ function selectTarget(e) {
 function handleLetterInput() {
     console.log("handling letter input");
 
+    //check if any non-alpha characters and remove from input
     const input = letterInput.value;
     const letters = input.replace(/[^a-z]/gim, "");
     console.log(`${input} v. ${letters}`);
+    letterInput.value = letters;
 
+    //if needed to remove a letter, display an err msg
     if (letters != input) {
         inputErrorMsgDisplay.classList.remove("hidden");
-        inputErrorMsgDisplay.innerText = "Please enter a valid letter";
     } else {
         inputErrorMsgDisplay.classList.add("hidden");
     }
 
-    //if needed to remove a letter, display an err msg
-
-    letterInput.value = letters;
-
+    //clear previous possible targets and then display all letters
     clearTargetDisplay();
 
     if (letters.length == 0) {
@@ -202,6 +204,7 @@ function handleLetterInput() {
         targetBtnContainer.appendChild(newLetter);
     }
 }
+
 
 /**
  * Must convert letters to uppercase when read in
@@ -247,7 +250,7 @@ function findWords(e) {
 function displayWords(validWordList, targetExists) {
     console.log("displaying words:");
 
-    inputErrorMsgDisplay.classList.add("hidden");   //clears input err msg because done inputting
+    inputErrorMsgDisplay.classList.add("hidden"); //clears input err msg because done inputting
     clearWordListDisplay(); //clears previous results
 
     //hides or displays the target error message
@@ -291,11 +294,13 @@ function displayWords(validWordList, targetExists) {
     }
 }
 
-
-function clearInputDisplay(){
+/**
+ * clear the input text and targets
+ */
+function clearInputDisplay() {
     inputErrorMsgDisplay.classList.add("hidden");
-    clearTargetDisplay();
     letterInput.value = "";
+    clearTargetDisplay();
 }
 
 /**
@@ -303,6 +308,7 @@ function clearInputDisplay(){
  */
 function clearTargetDisplay() {
     console.log("clearing target display");
+    targetInputLabel.classList.add("hidden");
     while (targetBtnContainer.firstChild) {
         targetBtnContainer.removeChild(targetBtnContainer.lastChild);
         targetBtnContainer.lastChild = null; //garbage collect event handlers
