@@ -123,7 +123,12 @@ const wordListTitleEl = document.getElementById("word-list-title");
 const lineBreakEl = document.getElementById("line-break");
 const targetBtnContainer = document.getElementById("target-btn-container");
 const targetInputLabel = document.getElementById("target-input-label");
-const errorMsgDisplay = document.getElementById("error-message-display");
+const targetErrorMsgDisplay = document.getElementById(
+    "target-error-message-display"
+);
+const inputErrorMsgDisplay = document.getElementById(
+    "input-error-message-display"
+);
 
 inputForm.addEventListener("submit", findWords);
 resetBtn.addEventListener("click", reset); //eventually on reset, reset inputs too not just display
@@ -164,16 +169,14 @@ function selectTarget(e) {
 function handleLetterInput() {
     console.log("handling letter input");
 
-
     let letters = letterInput.value;
-    letters = letters.replace(/[^a-z]/gmi, "");
+    letters = letters.replace(/[^a-z]/gim, "");
 
     //if needed to remove a letter, display an err msg
-    
+
     letterInput.value = letters;
 
     console.log(letterInput);
-
 
     clearTargetDisplay();
 
@@ -206,7 +209,6 @@ function findWords(e) {
 
     try {
         target = document.getElementsByClassName("target")[0].value;
-        errorMsgDisplay.classList.add("hidden");
         targetExists = true;
     } catch (error) {
         target = "";
@@ -242,9 +244,9 @@ function displayWords(validWordList, targetExists) {
 
     //hides or displays the target error message
     if (targetExists) {
-        errorMsgDisplay.classList.add("hidden");
+        targetErrorMsgDisplay.classList.add("hidden");
     } else {
-        errorMsgDisplay.classList.remove("hidden");
+        targetErrorMsgDisplay.classList.remove("hidden");
     }
 
     //display the title elements
@@ -300,7 +302,7 @@ function clearWordListDisplay() {
     console.log("clearing word list display");
     lineBreakEl.classList.add("hidden");
     wordListTitleEl.classList.add("hidden");
-    errorMsgDisplay.classList.add("hidden");
+    targetErrorMsgDisplay.classList.add("hidden");
     while (wordListDisplayEl.firstChild) {
         wordListDisplayEl.removeChild(wordListDisplayEl.lastChild);
     }

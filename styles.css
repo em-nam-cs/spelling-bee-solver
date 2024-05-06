@@ -5,6 +5,8 @@
     /* --block-color: red; */
     --text-color: #000000;
     --accent-color: #bca623;
+
+    box-sizing: border-box;
 }
 
 body {
@@ -98,4 +100,13 @@ h1 {
 
 .hidden {
     display: none;
+}
+
+.error-message {
+    font-style: italic;
+}
+
+/* override the margin within the .letter-input-container  */
+#input-error-message-display {
+    margin: 0px;
 }
