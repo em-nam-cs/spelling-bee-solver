@@ -168,6 +168,12 @@ function handleLetterInput() {
     let letters = letterInput.value;
     letters = letters.replace(/[^a-z]/gmi, "");
 
+    //if needed to remove a letter, display an err msg
+    
+    letterInput.value = letters;
+
+    console.log(letterInput);
+
 
     clearTargetDisplay();
 
