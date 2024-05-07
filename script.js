@@ -13,24 +13,18 @@
     for the word "cat" even though it is only the minimum number of letters)
 
 
-Note: Words and letters are compared in uppercase 
-(have this built in so no user issues)
+Note: Words and letters are compared in uppercase, push all characters to 
+uppercase as soon as it is read in
 
-@references NYT Spelling Bee Game
+@references NYT Spelling Bee Game, https://github.com/Teun/thenBy.js?files=1
 @author Em Nam
-@date 04-30-2024
+@date 05-07-2024
 */
 
 /**
-@todo create new DOM html elements for each letter upon any change in text field
-    @todo: prevent duplicate letters from showing in targets
-    @todo prevent space from adding to function or input
-    @todo hidden class for "select target", when no letters are entered yet
-
 @todo prevent spcaing from jumping when remove target and hide selection
 
-@todo ON RESET, reset the input options too
-
+@todo input validation - max length input
 
 @todo put toUpperCase() in the same spot for dictionary and for letter arr, target (put as soon as it is read in)
 @todo highlight chosen target word by adding or removing the class target
@@ -44,6 +38,8 @@ Note: Words and letters are compared in uppercase
 @todo put the firstBy, ThenBy code into module?
 @todo let user choose how to sort
 @todo change the heading based on what is being sorted first
+
+@todo way to erase choosing a target (without needing to clear all inputs or reset)
 
 */
 
@@ -103,17 +99,11 @@ const PANAGRAM_BONUS = 7;
     }
     return (p.firstBy = p);
 });
+// var firstBy = require("thenby");
+//same issue with importing module fs, currently just copy code directly into js
 //End
 
-//for reading in text file:
-// var firstBy = require("thenby"); //same issue with importing module fs
-// const filesystem = require("fs");
-//should store file server side and then access http req?
-// import * as fs from "./fs";
-const dictionary = readDictionary("assets/dictionary.txt");
-const dict = document.getElementById("dict");
-// console.log(dictionary);
-//end reading in text file
+readDictionary("assets/dictionary.txt");
 
 const letterInput = document.getElementById("letter-input");
 const inputForm = document.getElementById("inputs-form");
@@ -135,30 +125,18 @@ resetBtn.addEventListener("click", reset); //eventually on reset, reset inputs t
 letterInput.addEventListener("input", handleLetterInput);
 
 /**
- * clears the input and word display outputs, resets the screen to initial
- * status, with no letters, targets input or words found
+ * Constructor for a ValidWord object, which is an object that is a word
+ *      that can be created using the given letters
+ * @param {*} word string that is the word created
+ * @param {*} isPanagram boolean true if word is panagram (uses all letters)
+ * @param {*} numLetters int length of the word
+ * @param {*} score int score for submitting word
  */
-function reset() {
-    clearWordListDisplay();
-    clearInputDisplay();
-}
-
-/**
- * Set the target to the clicked input, remove previous target (if any)
- * @param {*} e the event where the click originated from (indicates new
-        current target)
- */
-function selectTarget(e) {
-    console.log("CLICKED");
-
-    //find previous target (if exists) and remove
-    const prevTarget = document.getElementsByClassName("target");
-    if (prevTarget[0]) {
-        prevTarget[0].classList.remove("target");
-    }
-
-    //set newly clicked to target
-    e.explicitOriginalTarget.classList.add("target");
+function ValidWord(word, isPanagram, numLetters, score) {
+    this.word = word;
+    this.isPanagram = isPanagram;
+    this.numLetters = numLetters;
+    this.score = score;
 }
 
 /**
@@ -176,7 +154,7 @@ function selectTarget(e) {
 function handleLetterInput() {
     console.log("handling letter input");
 
-    readCleanInputLetters();
+    let letters = readCleanInputLetters();
 
     //clear previous possible targets and then display all letters
     clearTargetDisplay();
@@ -191,7 +169,7 @@ function handleLetterInput() {
         const newLetter = document.createElement("input");
         newLetter.type = "button";
         newLetter.className = "target-input";
-        newLetter.value = letters[i].toUpperCase();
+        newLetter.value = letters[i];
         newLetter.addEventListener("click", selectTarget);
         targetBtnContainer.appendChild(newLetter);
     }
@@ -200,12 +178,15 @@ function handleLetterInput() {
 /**
  * read in the input text and make sure it only contains unique letters
  * set the input text to reflect the cleaned up version and display
- * error message if needed
+ * error message if needed, forces all input to be uppercase
+ * @return returns the valid input letters
  */
 function readCleanInputLetters() {
+
+    letterInput.value = letterInput.value.toUpperCase();
     const input = letterInput.value; //read input
     const onlyLetters = input.replace(/[^a-z]/gim, ""); //remove non-alpha char
-    letters = removeDuplicates(onlyLetters); //remove duplicates
+    const letters = removeDuplicates(onlyLetters); //remove duplicates
 
     //if needed to remove a letter/char, display an err msg
     inputErrorMsgDisplay.classList.remove("hidden");
@@ -219,6 +200,7 @@ function readCleanInputLetters() {
 
     //update letter input to reflect only the valid input chars
     letterInput.value = letters;
+    return letterInput.value;
 }
 
 /**
@@ -241,13 +223,32 @@ function removeDuplicates(str) {
 }
 
 /**
+ * Set the target to the clicked input, remove previous target (if any)
+ * @param {*} e the event where the click originated from (indicates new
+        current target)
+ */
+function selectTarget(e) {
+    console.log("CLICKED");
+
+    //find previous target (if exists) and remove
+    const prevTarget = document.getElementsByClassName("target");
+    if (prevTarget[0]) {
+        prevTarget[0].classList.remove("target");
+    }
+
+    //set newly clicked to target
+    e.explicitOriginalTarget.classList.add("target");
+}
+
+/**
  * Must convert letters to uppercase when read in
+ * Assume that the dictionary is read in by the time the findWords function is called
  * @param {*} e
  */
 function findWords(e) {
     e.preventDefault();
     console.log("finding words");
-    let letters = letterInput.value.toUpperCase();
+    let letters = letterInput.value;
     let target = "";
     let targetExists;
 
@@ -262,7 +263,7 @@ function findWords(e) {
 
     const wordsWithTarget = generateAllWordsWithTarget(
         letters,
-        miniDict, //miniDicct will be replaced with read in text file
+        dictionary,
         target
     );
 
@@ -329,6 +330,15 @@ function displayWords(validWordList, targetExists) {
 }
 
 /**
+ * clears the input and word display outputs, resets the screen to initial
+ * status, with no letters, targets input or words found
+ */
+function reset() {
+    clearWordListDisplay();
+    clearInputDisplay();
+}
+
+/**
  * clear the input text and targets
  */
 function clearInputDisplay() {
@@ -364,51 +374,25 @@ function clearWordListDisplay() {
 }
 
 /**
- * Constructor for a ValidWord object, which is an object that is a word
- *      that can be created using the given letters
- * @param {*} word string that is the word created
- * @param {*} isPanagram boolean true if word is panagram (uses all letters)
- * @param {*} numLetters int length of the word
- * @param {*} score int score for submitting word
+ * for each word in the dictionary, determine if it is a valid word to create
+ *      and generate and return an array of these words. Valid created words
+ *      must be made of only the given letters. Letters can be reused as many times
+ *      as per NYT Spelling Bee rules. The valid created words must also contain
+ *      the target letter at least once, 
+    assumes that the word and letters are in a matching case
+ * @param {*} letters array of available letters
+ * @param {*} dict array of possible valid words
+ * @param {*} target the letter that must appear in the word
+ * @returns
  */
-function ValidWord(word, isPanagram, numLetters, score) {
-    this.word = word;
-    this.isPanagram = isPanagram;
-    this.numLetters = numLetters;
-    this.score = score;
-}
-
-/**
- * comparison function that sorts in desc order with the highest score first
- * @param {*} a first ValidWord
- * @param {*} b second ValidWord
- * @returns negative if the second word scores lower, postive if second word is
-        a higher score, 0 if both words have the same score
- */
-function compareByScore(a, b) {
-    return b.score - a.score;
-}
-
-/**
- * comparison function that sorts in desc order with the highest score first
- * @param {*} a first ValidWord
- * @param {*} b second ValidWord
- * @returns negative if the second word length lower, postive if second word is
-        a longer length, 0 if both words have the same length
- */
-function compareByLength(a, b) {
-    return b.numLetters - a.numLetters;
-}
-
-/**
- * comparison function that sorts in desc order with the highest score first
- * @param {*} a first ValidWord
- * @param {*} b second ValidWord
- * @returns negative if the second word scores lower, postive if second word is
-        a higher score, 0 if both words have the same score
- */
-function compareByWord(a, b) {
-    return a.word.localeCompare(b.word);
+function generateAllWordsWithTarget(letters, dict, target) {
+    const words = [];
+    for (let i = 0; i < dict.length; i++) {
+        if (checkWordWithTarget(letters, dict[i], target, false)) {
+            words.push(dict[i]);
+        }
+    }
+    return words;
 }
 
 /**
@@ -436,6 +420,50 @@ function instantiateAllValidWords(wordList, letters) {
         }
     }
     return validWords;
+}
+
+/**
+ * Determine if the word is a valid word to create using the letters and
+ *      given target.Valid created words must be made of only the given letters.
+ *      Letters can be reused as many times as per NYT Spelling Bee rules.
+ *      The valid created words must also contain
+ *      the target letter at least once
+ * @param {*} letters array of available letters
+ * @param {*} word string of a word that is being checked if it can be created
+ * @param {*} target the letter that must appear in the word
+ * @param {*} valid boolean that is initially false until the target letter is
+ *      used in the word
+ * @returns
+ */
+function checkWordWithTarget(letters, word, target, valid) {
+    if (word == "") {
+        return valid;
+    } else if (letters.includes(word[0])) {
+        if (word[0] == target || target === "") {
+            //if the target is in the word, it is now valid
+            valid = true;
+        }
+        return checkWordWithTarget(letters, word.slice(1), target, valid);
+    } else {
+        return false;
+    }
+}
+
+/**
+ * returns if a given word is considered a panagram and uses all of the given
+ *      letters, 
+    assumes that the word and letters are in a matching case
+ * @param {*} word string, word that is being checked
+ * @param {*} letters array of letters that need to appear in word
+ * @returns boolean, true if all the letters are in the word, false otherwise
+ */
+function checkIsPanagram(word, letters) {
+    for (let i = 0; i < letters.length; i++) {
+        if (!word.includes(letters[i])) {
+            return false;
+        }
+    }
+    return true;
 }
 
 /**
@@ -477,95 +505,68 @@ function calcScore(word, isPanagram) {
 }
 
 /**
- * returns if a given word is considered a panagram and uses all of the given
- *      letters, 
-    assumes that the word and letters are in a matching case
- * @param {*} word string, word that is being checked
- * @param {*} letters array of letters that need to appear in word
- * @returns boolean, true if all the letters are in the word, false otherwise
+ * comparison function that sorts in desc order with the highest score first
+ * @param {*} a first ValidWord
+ * @param {*} b second ValidWord
+ * @returns negative if the second word scores lower, postive if second word is
+        a higher score, 0 if both words have the same score
  */
-function checkIsPanagram(word, letters) {
-    for (let i = 0; i < letters.length; i++) {
-        if (!word.includes(letters[i])) {
-            return false;
-        }
-    }
-    return true;
+function compareByScore(a, b) {
+    return b.score - a.score;
 }
 
 /**
- * reads a list of words from a text file and returns array
+ * comparison function that sorts in desc order with the highest score first
+ * @param {*} a first ValidWord
+ * @param {*} b second ValidWord
+ * @returns negative if the second word length lower, postive if second word is
+        a longer length, 0 if both words have the same length
+ */
+function compareByLength(a, b) {
+    return b.numLetters - a.numLetters;
+}
+
+/**
+ * comparison function that sorts in desc order with the highest score first
+ * @param {*} a first ValidWord
+ * @param {*} b second ValidWord
+ * @returns negative if the second word scores lower, postive if second word is
+        a higher score, 0 if both words have the same score
+ */
+function compareByWord(a, b) {
+    return a.word.localeCompare(b.word);
+}
+
+/**
+ * reads a list of words from a text file and sets dictionary array
  * assumes that each word is deliniated by a newline
  * @param {*} file name of the path/file that is being read in
- * @returns an array that stores all of the words in the file in lowercase
  */
 function readDictionary(file) {
     sendXMLHttpRequest("GET", file, null, (response) => {
-        // dict.innerText = response.toString().toUpperCase().split("\n");
-        return response.toString().toUpperCase().split("\n");
+        //the functionality is to parse and store response into dict vars
+        dictionary = response.toString().toUpperCase().split("\n");
     });
 }
 
+/**
+ * xml http request to get the contents of the file
+ * @param {*} type type of HTTP request
+ * @param {*} url URL of the file being accessed
+ * @param {*} data data sent in the request
+ * @param {*} callback fcuntion to call after response is received
+ */
 function sendXMLHttpRequest(type, url, data, callback) {
     var newRequest = new XMLHttpRequest();
     newRequest.open(type, url, true);
     newRequest.send(data);
     newRequest.onreadystatechange = function () {
         if (this.status === 200 && this.readyState === 4) {
+            //wait until a .response and then proceed with the callback function
             callback(this.response);
         }
     };
 }
-
-/**
- * for each word in the dictionary, determine if it is a valid word to create
- *      and generate and return an array of these words. Valid created words
- *      must be made of only the given letters. Letters can be reused as many times
- *      as per NYT Spelling Bee rules. The valid created words must also contain
- *      the target letter at least once, 
-    assumes that the word and letters are in a matching case
- * @param {*} letters array of available letters
- * @param {*} dict array of possible valid words
- * @param {*} target the letter that must appear in the word
- * @returns
- */
-function generateAllWordsWithTarget(letters, dict, target) {
-    const words = [];
-    for (let i = 0; i < dict.length; i++) {
-        if (checkWordWithTarget(letters, dict[i], target, false)) {
-            words.push(dict[i]);
-        }
-    }
-    return words;
-}
-
-/**
- * Determine if the word is a valid word to create using the letters and
- *      given target.Valid created words must be made of only the given letters.
- *      Letters can be reused as many times as per NYT Spelling Bee rules.
- *      The valid created words must also contain
- *      the target letter at least once
- * @param {*} letters array of available letters
- * @param {*} word string of a word that is being checked if it can be created
- * @param {*} target the letter that must appear in the word
- * @param {*} valid boolean that is initially false until the target letter is
- *      used in the word
- * @returns
- */
-function checkWordWithTarget(letters, word, target, valid) {
-    if (word == "") {
-        return valid;
-    } else if (letters.includes(word[0])) {
-        if (word[0] == target || target === "") {
-            //if the target is in the word, it is now valid
-            valid = true;
-        }
-        return checkWordWithTarget(letters, word.slice(1), target, valid);
-    } else {
-        return false;
-    }
-}
-
 //*************************************************************************//
 //************ TEST BACKGROUND LOGIC/WORD FINDING FUNCTIONS ***************//
 //*************************************************************************//
@@ -579,18 +580,18 @@ function checkWordWithTarget(letters, word, target, valid) {
 // const miniLetters = ["c", "a", "t"];
 // const miniTarget = "a";
 
-const miniDict = [
-    "TAT",
-    "CAT",
-    "ACT",
-    "CATTY",
-    "CT",
-    "FALSE",
-    "BLACNK",
-    "ACTION",
-    "TATA",
-    "TACT",
-];
+// const miniDict = [
+//     "TAT",
+//     "CAT",
+//     "ACT",
+//     "CATTY",
+//     "CT",
+//     "FALSE",
+//     "BLACNK",
+//     "ACTION",
+//     "TATA",
+//     "TACT",
+// ];
 
 // const wordsTargetMini = generateAllWordsWithTarget(
 //     miniLetters,
@@ -625,45 +626,45 @@ const miniDict = [
 // console.log("All words:");
 // console.log(words);
 
-/**
- * return an array of all the words in the dict that are able to made 
-        created using the letters 
- * @param {*} letters letters available to be used
- * @param {*} dict list of valid words being checked
- * @returns array of words that can be created
- */
-function generateAllWords(letters, dict) {
-    const words = [];
-    for (let i = 0; i < dict.length; i++) {
-        if (checkWord(letters, dict[i])) {
-            words.push(dict[i]);
-        }
-    }
-    return words;
-}
+// /**
+//  * return an array of all the words in the dict that are able to made
+//         created using the letters
+//  * @param {*} letters letters available to be used
+//  * @param {*} dict list of valid words being checked
+//  * @returns array of words that can be created
+//  */
+// function generateAllWords(letters, dict) {
+//     const words = [];
+//     for (let i = 0; i < dict.length; i++) {
+//         if (checkWord(letters, dict[i])) {
+//             words.push(dict[i]);
+//         }
+//     }
+//     return words;
+// }
 
-function generateAllWordsResult(letters, dict) {
-    for (let i = 0; i < dict.length; i++) {
-        let result = checkWord(letters, dict[i]);
-        console.log(`${i}: word checked ${dict[i]} is ${result}`);
-    }
-}
+// function generateAllWordsResult(letters, dict) {
+//     for (let i = 0; i < dict.length; i++) {
+//         let result = checkWord(letters, dict[i]);
+//         console.log(`${i}: word checked ${dict[i]} is ${result}`);
+//     }
+// }
 
-/**
- * determines if a word can be created with the given letters
- *      letters are allowed to be reused as many times as desired
+// /**
+//  * determines if a word can be created with the given letters
+//  *      letters are allowed to be reused as many times as desired
 
- * @param {*} letters letters available to be used in the word
- * @param {*} word target word being created
- * @returns true if a single word can be created with the letters given
-        otherwise returns false
- */
-function checkWord(letters, word) {
-    if (word == "") {
-        return true;
-    } else if (letters.includes(word[0])) {
-        return checkWord(letters, word.slice(1));
-    } else {
-        return false;
-    }
-}
+//  * @param {*} letters letters available to be used in the word
+//  * @param {*} word target word being created
+//  * @returns true if a single word can be created with the letters given
+//         otherwise returns false
+//  */
+// function checkWord(letters, word) {
+//     if (word == "") {
+//         return true;
+//     } else if (letters.includes(word[0])) {
+//         return checkWord(letters, word.slice(1));
+//     } else {
+//         return false;
+//     }
+// }
