@@ -16,7 +16,7 @@
 Note: Words and letters are compared in uppercase 
 (have this built in so no user issues)
 
-@references NYT Spelling Bee Game
+@references NYT Spelling Bee Game, https://github.com/Teun/thenBy.js?files=1
 @author Em Nam
 @date 05-07-2024
 */
@@ -38,6 +38,8 @@ Note: Words and letters are compared in uppercase
 @todo put the firstBy, ThenBy code into module?
 @todo let user choose how to sort
 @todo change the heading based on what is being sorted first
+
+@todo way to erase choosing a target (without needing to clear all inputs or reset)
 
 */
 
@@ -574,18 +576,18 @@ function sendXMLHttpRequest(type, url, data, callback) {
 // const miniLetters = ["c", "a", "t"];
 // const miniTarget = "a";
 
-const miniDict = [
-    "TAT",
-    "CAT",
-    "ACT",
-    "CATTY",
-    "CT",
-    "FALSE",
-    "BLACNK",
-    "ACTION",
-    "TATA",
-    "TACT",
-];
+// const miniDict = [
+//     "TAT",
+//     "CAT",
+//     "ACT",
+//     "CATTY",
+//     "CT",
+//     "FALSE",
+//     "BLACNK",
+//     "ACTION",
+//     "TATA",
+//     "TACT",
+// ];
 
 // const wordsTargetMini = generateAllWordsWithTarget(
 //     miniLetters,
@@ -620,45 +622,45 @@ const miniDict = [
 // console.log("All words:");
 // console.log(words);
 
-/**
- * return an array of all the words in the dict that are able to made 
-        created using the letters 
- * @param {*} letters letters available to be used
- * @param {*} dict list of valid words being checked
- * @returns array of words that can be created
- */
-function generateAllWords(letters, dict) {
-    const words = [];
-    for (let i = 0; i < dict.length; i++) {
-        if (checkWord(letters, dict[i])) {
-            words.push(dict[i]);
-        }
-    }
-    return words;
-}
+// /**
+//  * return an array of all the words in the dict that are able to made
+//         created using the letters
+//  * @param {*} letters letters available to be used
+//  * @param {*} dict list of valid words being checked
+//  * @returns array of words that can be created
+//  */
+// function generateAllWords(letters, dict) {
+//     const words = [];
+//     for (let i = 0; i < dict.length; i++) {
+//         if (checkWord(letters, dict[i])) {
+//             words.push(dict[i]);
+//         }
+//     }
+//     return words;
+// }
 
-function generateAllWordsResult(letters, dict) {
-    for (let i = 0; i < dict.length; i++) {
-        let result = checkWord(letters, dict[i]);
-        console.log(`${i}: word checked ${dict[i]} is ${result}`);
-    }
-}
+// function generateAllWordsResult(letters, dict) {
+//     for (let i = 0; i < dict.length; i++) {
+//         let result = checkWord(letters, dict[i]);
+//         console.log(`${i}: word checked ${dict[i]} is ${result}`);
+//     }
+// }
 
-/**
- * determines if a word can be created with the given letters
- *      letters are allowed to be reused as many times as desired
+// /**
+//  * determines if a word can be created with the given letters
+//  *      letters are allowed to be reused as many times as desired
 
- * @param {*} letters letters available to be used in the word
- * @param {*} word target word being created
- * @returns true if a single word can be created with the letters given
-        otherwise returns false
- */
-function checkWord(letters, word) {
-    if (word == "") {
-        return true;
-    } else if (letters.includes(word[0])) {
-        return checkWord(letters, word.slice(1));
-    } else {
-        return false;
-    }
-}
+//  * @param {*} letters letters available to be used in the word
+//  * @param {*} word target word being created
+//  * @returns true if a single word can be created with the letters given
+//         otherwise returns false
+//  */
+// function checkWord(letters, word) {
+//     if (word == "") {
+//         return true;
+//     } else if (letters.includes(word[0])) {
+//         return checkWord(letters, word.slice(1));
+//     } else {
+//         return false;
+//     }
+// }
