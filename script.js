@@ -22,14 +22,7 @@ Note: Words and letters are compared in uppercase
 */
 
 /**
-@todo create new DOM html elements for each letter upon any change in text field
-    @todo: prevent duplicate letters from showing in targets
-    @todo prevent space from adding to function or input
-    @todo hidden class for "select target", when no letters are entered yet
-
 @todo prevent spcaing from jumping when remove target and hide selection
-
-@todo ON RESET, reset the input options too
 
 @todo input validation - max length input
 
@@ -104,7 +97,11 @@ const PANAGRAM_BONUS = 7;
     }
     return (p.firstBy = p);
 });
+// var firstBy = require("thenby");
+//same issue with importing module fs, currently just copy code directly into js
 //End
+
+readDictionary("assets/dictionary.txt");
 
 const letterInput = document.getElementById("letter-input");
 const inputForm = document.getElementById("inputs-form");
@@ -125,67 +122,19 @@ inputForm.addEventListener("submit", findWords);
 resetBtn.addEventListener("click", reset); //eventually on reset, reset inputs too not just display
 letterInput.addEventListener("input", handleLetterInput);
 
-//for reading in text file:
-// var firstBy = require("thenby"); //same issue with importing module fs, currently just copy code directly into js
-// const filesystem = require("fs");
-//should store file server side and then access http req?
-// import * as fs from "./fs";
-const dict = document.getElementById("dict");
-let dictionary = readDictionary("assets/dictionary.txt");
-console.log("dict: ");
-console.log(dictionary);
-//end reading in text file
-
 /**
- * reads a list of words from a text file and returns array
- * assumes that each word is deliniated by a newline
- * @param {*} file name of the path/file that is being read in
- * @returns an array that stores all of the words in the file in lowercase
+ * Constructor for a ValidWord object, which is an object that is a word
+ *      that can be created using the given letters
+ * @param {*} word string that is the word created
+ * @param {*} isPanagram boolean true if word is panagram (uses all letters)
+ * @param {*} numLetters int length of the word
+ * @param {*} score int score for submitting word
  */
-function readDictionary(file) {
-    sendXMLHttpRequest("GET", file, null, (response) => {
-        //the functionality is to parse and store response into dict vars
-        dictionary = response.toString().toUpperCase().split("\n");
-    });
-}
-
-function sendXMLHttpRequest(type, url, data, callback) {
-    var newRequest = new XMLHttpRequest();
-    newRequest.open(type, url, true);
-    newRequest.send(data);
-    newRequest.onreadystatechange = function () {
-        if (this.status === 200 && this.readyState === 4) {
-            //wait until a .response and then proceed with the callback function
-            callback(this.response);
-        }
-    };
-}
-
-/**
- * clears the input and word display outputs, resets the screen to initial
- * status, with no letters, targets input or words found
- */
-function reset() {
-    clearWordListDisplay();
-    clearInputDisplay();
-}
-
-/**
- * Set the target to the clicked input, remove previous target (if any)
- * @param {*} e the event where the click originated from (indicates new
-        current target)
- */
-function selectTarget(e) {
-    console.log("CLICKED");
-
-    //find previous target (if exists) and remove
-    const prevTarget = document.getElementsByClassName("target");
-    if (prevTarget[0]) {
-        prevTarget[0].classList.remove("target");
-    }
-
-    //set newly clicked to target
-    e.explicitOriginalTarget.classList.add("target");
+function ValidWord(word, isPanagram, numLetters, score) {
+    this.word = word;
+    this.isPanagram = isPanagram;
+    this.numLetters = numLetters;
+    this.score = score;
 }
 
 /**
@@ -268,6 +217,24 @@ function removeDuplicates(str) {
 }
 
 /**
+ * Set the target to the clicked input, remove previous target (if any)
+ * @param {*} e the event where the click originated from (indicates new
+        current target)
+ */
+function selectTarget(e) {
+    console.log("CLICKED");
+
+    //find previous target (if exists) and remove
+    const prevTarget = document.getElementsByClassName("target");
+    if (prevTarget[0]) {
+        prevTarget[0].classList.remove("target");
+    }
+
+    //set newly clicked to target
+    e.explicitOriginalTarget.classList.add("target");
+}
+
+/**
  * Must convert letters to uppercase when read in
  * Assume that the dictionary is read in by the time the findWords function is called
  * @param {*} e
@@ -288,14 +255,9 @@ function findWords(e) {
         console.log(error.message);
     }
 
-    // const wordsWithTarget = generateAllWordsWithTarget(
-    //     letters,
-    //     miniDict, //miniDicct will be replaced with read in text file
-    //     target
-    // );
     const wordsWithTarget = generateAllWordsWithTarget(
         letters,
-        dictionary, //gen words using larger dict
+        dictionary,
         target
     );
 
@@ -362,6 +324,15 @@ function displayWords(validWordList, targetExists) {
 }
 
 /**
+ * clears the input and word display outputs, resets the screen to initial
+ * status, with no letters, targets input or words found
+ */
+function reset() {
+    clearWordListDisplay();
+    clearInputDisplay();
+}
+
+/**
  * clear the input text and targets
  */
 function clearInputDisplay() {
@@ -397,54 +368,6 @@ function clearWordListDisplay() {
 }
 
 /**
- * Constructor for a ValidWord object, which is an object that is a word
- *      that can be created using the given letters
- * @param {*} word string that is the word created
- * @param {*} isPanagram boolean true if word is panagram (uses all letters)
- * @param {*} numLetters int length of the word
- * @param {*} score int score for submitting word
- */
-function ValidWord(word, isPanagram, numLetters, score) {
-    this.word = word;
-    this.isPanagram = isPanagram;
-    this.numLetters = numLetters;
-    this.score = score;
-}
-
-/**
- * comparison function that sorts in desc order with the highest score first
- * @param {*} a first ValidWord
- * @param {*} b second ValidWord
- * @returns negative if the second word scores lower, postive if second word is
-        a higher score, 0 if both words have the same score
- */
-function compareByScore(a, b) {
-    return b.score - a.score;
-}
-
-/**
- * comparison function that sorts in desc order with the highest score first
- * @param {*} a first ValidWord
- * @param {*} b second ValidWord
- * @returns negative if the second word length lower, postive if second word is
-        a longer length, 0 if both words have the same length
- */
-function compareByLength(a, b) {
-    return b.numLetters - a.numLetters;
-}
-
-/**
- * comparison function that sorts in desc order with the highest score first
- * @param {*} a first ValidWord
- * @param {*} b second ValidWord
- * @returns negative if the second word scores lower, postive if second word is
-        a higher score, 0 if both words have the same score
- */
-function compareByWord(a, b) {
-    return a.word.localeCompare(b.word);
-}
-
-/**
  * for each word that is possible to be created, create a new ValidWord object
         that stores information about the word (the string, if panagram, length
         and the score). Based on NYT, a valid word must be at least the 
@@ -469,61 +392,6 @@ function instantiateAllValidWords(wordList, letters) {
         }
     }
     return validWords;
-}
-
-/**
- * find and return a list of all the panagrams from a given wordList of 
-        ValidWords
- * @param {*} wordList list of words being checked if panagrams
- * @returns an array of ValidWord objects that are panagrams
- */
-function returnAllPanagrams(wordList) {
-    const panagrams = [];
-    for (let i = 0; i < wordList.length; i++) {
-        if (wordList[i].isPanagram) {
-            panagrams.push(wordList[i]);
-        }
-    }
-    return panagrams;
-}
-
-/**
- * Calculate the score earned for a given word. A minimum letter word is 1 point
-        Otherwise a word gets the number of points based on it's length. A
-        Panagram gets bonus points
- * @param {*} word string that is being scored
- * @param {*} isPanagram boolean if the word is a panagram or not
- * @returns int that represents number of points earned
- */
-function calcScore(word, isPanagram) {
-    const len = word.length;
-    let lenPoints = 0;
-    if (len < MIN_WORD_LENGTH) {
-        lenPoints = 0;
-    } else if (len == MIN_WORD_LENGTH) {
-        lenPoints = 1;
-    } else {
-        lenPoints = len;
-    }
-
-    return lenPoints + PANAGRAM_BONUS * isPanagram;
-}
-
-/**
- * returns if a given word is considered a panagram and uses all of the given
- *      letters, 
-    assumes that the word and letters are in a matching case
- * @param {*} word string, word that is being checked
- * @param {*} letters array of letters that need to appear in word
- * @returns boolean, true if all the letters are in the word, false otherwise
- */
-function checkIsPanagram(word, letters) {
-    for (let i = 0; i < letters.length; i++) {
-        if (!word.includes(letters[i])) {
-            return false;
-        }
-    }
-    return true;
 }
 
 /**
@@ -575,6 +443,124 @@ function checkWordWithTarget(letters, word, target, valid) {
     }
 }
 
+/**
+ * returns if a given word is considered a panagram and uses all of the given
+ *      letters, 
+    assumes that the word and letters are in a matching case
+ * @param {*} word string, word that is being checked
+ * @param {*} letters array of letters that need to appear in word
+ * @returns boolean, true if all the letters are in the word, false otherwise
+ */
+function checkIsPanagram(word, letters) {
+    for (let i = 0; i < letters.length; i++) {
+        if (!word.includes(letters[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
+ * find and return a list of all the panagrams from a given wordList of 
+        ValidWords
+ * @param {*} wordList list of words being checked if panagrams
+ * @returns an array of ValidWord objects that are panagrams
+ */
+function returnAllPanagrams(wordList) {
+    const panagrams = [];
+    for (let i = 0; i < wordList.length; i++) {
+        if (wordList[i].isPanagram) {
+            panagrams.push(wordList[i]);
+        }
+    }
+    return panagrams;
+}
+
+/**
+ * Calculate the score earned for a given word. A minimum letter word is 1 point
+        Otherwise a word gets the number of points based on it's length. A
+        Panagram gets bonus points
+ * @param {*} word string that is being scored
+ * @param {*} isPanagram boolean if the word is a panagram or not
+ * @returns int that represents number of points earned
+ */
+function calcScore(word, isPanagram) {
+    const len = word.length;
+    let lenPoints = 0;
+    if (len < MIN_WORD_LENGTH) {
+        lenPoints = 0;
+    } else if (len == MIN_WORD_LENGTH) {
+        lenPoints = 1;
+    } else {
+        lenPoints = len;
+    }
+
+    return lenPoints + PANAGRAM_BONUS * isPanagram;
+}
+
+/**
+ * comparison function that sorts in desc order with the highest score first
+ * @param {*} a first ValidWord
+ * @param {*} b second ValidWord
+ * @returns negative if the second word scores lower, postive if second word is
+        a higher score, 0 if both words have the same score
+ */
+function compareByScore(a, b) {
+    return b.score - a.score;
+}
+
+/**
+ * comparison function that sorts in desc order with the highest score first
+ * @param {*} a first ValidWord
+ * @param {*} b second ValidWord
+ * @returns negative if the second word length lower, postive if second word is
+        a longer length, 0 if both words have the same length
+ */
+function compareByLength(a, b) {
+    return b.numLetters - a.numLetters;
+}
+
+/**
+ * comparison function that sorts in desc order with the highest score first
+ * @param {*} a first ValidWord
+ * @param {*} b second ValidWord
+ * @returns negative if the second word scores lower, postive if second word is
+        a higher score, 0 if both words have the same score
+ */
+function compareByWord(a, b) {
+    return a.word.localeCompare(b.word);
+}
+
+/**
+ * reads a list of words from a text file and sets dictionary array
+ * assumes that each word is deliniated by a newline
+ * @param {*} file name of the path/file that is being read in
+ */
+function readDictionary(file) {
+    sendXMLHttpRequest("GET", file, null, (response) => {
+        //the functionality is to parse and store response into dict vars
+        dictionary = response.toString().toUpperCase().split("\n");
+    });
+}
+
+/**
+ * xml http request to get the contents of the file
+ * @param {*} type type of HTTP request
+ * @param {*} url URL of the file being accessed
+ * @param {*} data data sent in the request
+ * @param {*} callback fcuntion to call after response is received
+ */
+function sendXMLHttpRequest(type, url, data, callback) {
+    var newRequest = new XMLHttpRequest();
+    newRequest.open(type, url, true);
+    newRequest.send(data);
+    newRequest.onreadystatechange = function () {
+        if (this.status === 200 && this.readyState === 4) {
+            //wait until a .response and then proceed with the callback function
+            callback(this.response);
+        }
+    };
+}
 //*************************************************************************//
 //************ TEST BACKGROUND LOGIC/WORD FINDING FUNCTIONS ***************//
 //*************************************************************************//
