@@ -13,8 +13,8 @@
     for the word "cat" even though it is only the minimum number of letters)
 
 
-Note: Words and letters are compared in uppercase 
-(have this built in so no user issues)
+Note: Words and letters are compared in uppercase, push all characters to 
+uppercase as soon as it is read in
 
 @references NYT Spelling Bee Game, https://github.com/Teun/thenBy.js?files=1
 @author Em Nam
@@ -154,7 +154,7 @@ function ValidWord(word, isPanagram, numLetters, score) {
 function handleLetterInput() {
     console.log("handling letter input");
 
-    readCleanInputLetters();
+    let letters = readCleanInputLetters();
 
     //clear previous possible targets and then display all letters
     clearTargetDisplay();
@@ -169,7 +169,7 @@ function handleLetterInput() {
         const newLetter = document.createElement("input");
         newLetter.type = "button";
         newLetter.className = "target-input";
-        newLetter.value = letters[i].toUpperCase();
+        newLetter.value = letters[i];
         newLetter.addEventListener("click", selectTarget);
         targetBtnContainer.appendChild(newLetter);
     }
@@ -178,12 +178,15 @@ function handleLetterInput() {
 /**
  * read in the input text and make sure it only contains unique letters
  * set the input text to reflect the cleaned up version and display
- * error message if needed
+ * error message if needed, forces all input to be uppercase
+ * @return returns the valid input letters
  */
 function readCleanInputLetters() {
+
+    letterInput.value = letterInput.value.toUpperCase();
     const input = letterInput.value; //read input
     const onlyLetters = input.replace(/[^a-z]/gim, ""); //remove non-alpha char
-    letters = removeDuplicates(onlyLetters); //remove duplicates
+    const letters = removeDuplicates(onlyLetters); //remove duplicates
 
     //if needed to remove a letter/char, display an err msg
     inputErrorMsgDisplay.classList.remove("hidden");
@@ -197,6 +200,7 @@ function readCleanInputLetters() {
 
     //update letter input to reflect only the valid input chars
     letterInput.value = letters;
+    return letterInput.value;
 }
 
 /**
@@ -244,7 +248,7 @@ function selectTarget(e) {
 function findWords(e) {
     e.preventDefault();
     console.log("finding words");
-    let letters = letterInput.value.toUpperCase();
+    let letters = letterInput.value;
     let target = "";
     let targetExists;
 
@@ -370,6 +374,28 @@ function clearWordListDisplay() {
 }
 
 /**
+ * for each word in the dictionary, determine if it is a valid word to create
+ *      and generate and return an array of these words. Valid created words
+ *      must be made of only the given letters. Letters can be reused as many times
+ *      as per NYT Spelling Bee rules. The valid created words must also contain
+ *      the target letter at least once, 
+    assumes that the word and letters are in a matching case
+ * @param {*} letters array of available letters
+ * @param {*} dict array of possible valid words
+ * @param {*} target the letter that must appear in the word
+ * @returns
+ */
+function generateAllWordsWithTarget(letters, dict, target) {
+    const words = [];
+    for (let i = 0; i < dict.length; i++) {
+        if (checkWordWithTarget(letters, dict[i], target, false)) {
+            words.push(dict[i]);
+        }
+    }
+    return words;
+}
+
+/**
  * for each word that is possible to be created, create a new ValidWord object
         that stores information about the word (the string, if panagram, length
         and the score). Based on NYT, a valid word must be at least the 
@@ -394,28 +420,6 @@ function instantiateAllValidWords(wordList, letters) {
         }
     }
     return validWords;
-}
-
-/**
- * for each word in the dictionary, determine if it is a valid word to create
- *      and generate and return an array of these words. Valid created words
- *      must be made of only the given letters. Letters can be reused as many times
- *      as per NYT Spelling Bee rules. The valid created words must also contain
- *      the target letter at least once, 
-    assumes that the word and letters are in a matching case
- * @param {*} letters array of available letters
- * @param {*} dict array of possible valid words
- * @param {*} target the letter that must appear in the word
- * @returns
- */
-function generateAllWordsWithTarget(letters, dict, target) {
-    const words = [];
-    for (let i = 0; i < dict.length; i++) {
-        if (checkWordWithTarget(letters, dict[i], target, false)) {
-            words.push(dict[i]);
-        }
-    }
-    return words;
 }
 
 /**
