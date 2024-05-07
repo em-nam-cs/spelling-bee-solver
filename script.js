@@ -18,7 +18,7 @@ Note: Words and letters are compared in uppercase
 
 @references NYT Spelling Bee Game
 @author Em Nam
-@date 04-30-2024
+@date 05-07-2024
 */
 
 /**
@@ -31,6 +31,7 @@ Note: Words and letters are compared in uppercase
 
 @todo ON RESET, reset the input options too
 
+@todo input validation - max length input
 
 @todo put toUpperCase() in the same spot for dictionary and for letter arr, target (put as soon as it is read in)
 @todo highlight chosen target word by adding or removing the class target
@@ -105,16 +106,6 @@ const PANAGRAM_BONUS = 7;
 });
 //End
 
-//for reading in text file:
-// var firstBy = require("thenby"); //same issue with importing module fs
-// const filesystem = require("fs");
-//should store file server side and then access http req?
-// import * as fs from "./fs";
-const dictionary = readDictionary("assets/dictionary.txt");
-const dict = document.getElementById("dict");
-// console.log(dictionary);
-//end reading in text file
-
 const letterInput = document.getElementById("letter-input");
 const inputForm = document.getElementById("inputs-form");
 const wordListDisplayEl = document.getElementById("word-list-display");
@@ -133,6 +124,42 @@ const inputErrorMsgDisplay = document.getElementById(
 inputForm.addEventListener("submit", findWords);
 resetBtn.addEventListener("click", reset); //eventually on reset, reset inputs too not just display
 letterInput.addEventListener("input", handleLetterInput);
+
+//for reading in text file:
+// var firstBy = require("thenby"); //same issue with importing module fs, currently just copy code directly into js
+// const filesystem = require("fs");
+//should store file server side and then access http req?
+// import * as fs from "./fs";
+const dict = document.getElementById("dict");
+let dictionary = readDictionary("assets/dictionary.txt");
+console.log("dict: ");
+console.log(dictionary);
+//end reading in text file
+
+/**
+ * reads a list of words from a text file and returns array
+ * assumes that each word is deliniated by a newline
+ * @param {*} file name of the path/file that is being read in
+ * @returns an array that stores all of the words in the file in lowercase
+ */
+function readDictionary(file) {
+    sendXMLHttpRequest("GET", file, null, (response) => {
+        //the functionality is to parse and store response into dict vars
+        dictionary = response.toString().toUpperCase().split("\n");
+    });
+}
+
+function sendXMLHttpRequest(type, url, data, callback) {
+    var newRequest = new XMLHttpRequest();
+    newRequest.open(type, url, true);
+    newRequest.send(data);
+    newRequest.onreadystatechange = function () {
+        if (this.status === 200 && this.readyState === 4) {
+            //wait until a .response and then proceed with the callback function
+            callback(this.response);
+        }
+    };
+}
 
 /**
  * clears the input and word display outputs, resets the screen to initial
@@ -242,6 +269,7 @@ function removeDuplicates(str) {
 
 /**
  * Must convert letters to uppercase when read in
+ * Assume that the dictionary is read in by the time the findWords function is called
  * @param {*} e
  */
 function findWords(e) {
@@ -260,9 +288,14 @@ function findWords(e) {
         console.log(error.message);
     }
 
+    // const wordsWithTarget = generateAllWordsWithTarget(
+    //     letters,
+    //     miniDict, //miniDicct will be replaced with read in text file
+    //     target
+    // );
     const wordsWithTarget = generateAllWordsWithTarget(
         letters,
-        miniDict, //miniDicct will be replaced with read in text file
+        dictionary, //gen words using larger dict
         target
     );
 
@@ -491,30 +524,6 @@ function checkIsPanagram(word, letters) {
         }
     }
     return true;
-}
-
-/**
- * reads a list of words from a text file and returns array
- * assumes that each word is deliniated by a newline
- * @param {*} file name of the path/file that is being read in
- * @returns an array that stores all of the words in the file in lowercase
- */
-function readDictionary(file) {
-    sendXMLHttpRequest("GET", file, null, (response) => {
-        // dict.innerText = response.toString().toUpperCase().split("\n");
-        return response.toString().toUpperCase().split("\n");
-    });
-}
-
-function sendXMLHttpRequest(type, url, data, callback) {
-    var newRequest = new XMLHttpRequest();
-    newRequest.open(type, url, true);
-    newRequest.send(data);
-    newRequest.onreadystatechange = function () {
-        if (this.status === 200 && this.readyState === 4) {
-            callback(this.response);
-        }
-    };
 }
 
 /**
