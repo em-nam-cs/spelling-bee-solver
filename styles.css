@@ -94,6 +94,13 @@ button {
     pointer-events: none;
 }
 
+/*temp solution:*/
+/*need fixed height for scroll to work, but this only works when screen height is full (because input section takes up space)*/
+section {
+    overflow-y: auto;
+    height: 55vh;
+}
+
 h1 {
     color: var(--accent-color);
 }
