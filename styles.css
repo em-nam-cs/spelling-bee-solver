@@ -12,13 +12,8 @@
 body {
     background-color: var(--page-color);
     color: var(--body-text-color);
-    /* display: flex; */
-    /* flex-direction: column; */
-    /* justify-content: center; */
     align-items: center;
-    /* min-height: 100vh; */
     margin: 0;
-    
     height: 100vh;
     overflow: hidden;
     
@@ -97,28 +92,18 @@ button {
     pointer-events: none;
 }
 
-/*temp solution:*/
-/*need fixed height for scroll to work, but this only works when screen height is full (because input section takes up space)*/
+
 .container {
     padding: 25px;
     overflow-y: clip;
-
     height: 100%;
 }
 
 #display {
-    background-color: pink;
-
     height: 100%;
     margin-bottom: 50px;
     overflow-y: scroll;
 }
-
-#word-list-display {
-    /* overflow-y: scroll; */
-}
-
-/*end sizing sol*/
 
 h1 {
     color: var(--accent-color);

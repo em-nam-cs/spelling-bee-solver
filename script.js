@@ -124,59 +124,11 @@ const inputErrorMsgDisplay = document.getElementById(
 inputForm.addEventListener("submit", findWords);
 resetBtn.addEventListener("click", reset);
 letterInput.addEventListener("input", handleLetterInput);
+window.addEventListener("resize", setDisplayHeight);
 
-/**
-TEST FUNCTION TO SET SCROLL HEIGHT
- */
 
-function setDisplayHeight() {
-    console.log("Set display height here");
 
-    const container = document.getElementsByClassName("container")[0];
-    console.log(container.children);
 
-    //start with initial height available in container
-    let remainingHeight =
-        container.offsetHeight -
-        Number(getComputedStyle(container).paddingTop.slice(0, -2)) -
-        Number(getComputedStyle(container).paddingBottom.slice(0, -2));
-
-    console.log(remainingHeight);
-    let index = 0;
-
-    //subtract the cumulative height of sections above the display
-    while (container.children[index].id != "display" && index < 10) {
-        console.log(index);
-        console.log(container.children[index]);
-        remainingHeight =
-            remainingHeight -
-            container.children[index].offsetHeight -
-            getComputedStyle(container.children[index]).marginTop.slice(0, -2) -
-            getComputedStyle(container.children[index]).marginBottom.slice(
-                0,
-                -2
-            );
-        console.log(remainingHeight);
-
-        console.log(
-            getComputedStyle(container.children[index]).marginTop.slice(0, -2)
-        );
-        index++;
-    }
-
-    //subtract the height of margin to keep for the display section
-    remainingHeight =
-        remainingHeight - getComputedStyle(display).marginBottom.slice(0, -2);
-    console.log(display.style.getPropertyValue("offsetHeight"));
-    console.log(getComputedStyle(display).marginBottom.slice(0, -2));
-
-    //set the height property for the display 
-    display.style.setProperty("height", remainingHeight + "px");
-    console.log(display.style.getPropertyValue("height"));
-}
-
-// setDisplayHeight();
-// window.addEventListener("resize", setDisplayHeight);
 
 /**
  * Constructor for a ValidWord object, which is an object that is a word
@@ -428,6 +380,46 @@ function clearWordListDisplay() {
         wordListDisplayEl.removeChild(wordListDisplayEl.lastChild);
     }
 }
+
+/**
+ * calculates the remaining height of viewport on screen to determine height
+ *      needed for display word list element. Starts with total height of container
+ *      and subtracts margins and preceding elements' heights. Then sets value
+ *      for display height in css (in order for scroll to not overflow)
+ */
+function setDisplayHeight() {
+    const container = document.getElementsByClassName("container")[0];
+
+    //start with initial height available in container
+    let remainingHeight =
+        container.offsetHeight -
+        Number(getComputedStyle(container).paddingTop.slice(0, -2)) -
+        Number(getComputedStyle(container).paddingBottom.slice(0, -2));
+
+    let index = 0;
+
+    //subtract the cumulative height of sections above the display
+    while (container.children[index].id != "display" && index < 10) {
+        remainingHeight =
+            remainingHeight -
+            container.children[index].offsetHeight -
+            getComputedStyle(container.children[index]).marginTop.slice(0, -2) -
+            getComputedStyle(container.children[index]).marginBottom.slice(
+                0,
+                -2
+            );
+
+        index++;
+    }
+
+    //subtract the height of margin to keep for the display section
+    remainingHeight =
+        remainingHeight - getComputedStyle(display).marginBottom.slice(0, -2);
+
+    //set the height property for the display 
+    display.style.setProperty("height", remainingHeight + "px");
+}
+
 
 /**
  * for each word in the dictionary, determine if it is a valid word to create
