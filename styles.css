@@ -18,7 +18,7 @@ body {
     align-items: center;
     /* min-height: 100vh; */
     margin: 0;
-    padding: 25px;
+    
     height: 100vh;
     overflow: hidden;
     
@@ -99,11 +99,18 @@ button {
 
 /*temp solution:*/
 /*need fixed height for scroll to work, but this only works when screen height is full (because input section takes up space)*/
+.container {
+    padding: 25px;
+    overflow-y: clip;
+
+    height: 100%;
+}
+
 #display {
     background-color: pink;
-    overflow-y: auto;
-    /* height: 55vh; */
 
+    height: 100%;
+    margin-bottom: 50px;
     overflow-y: scroll;
 }
 
@@ -111,9 +118,11 @@ button {
     /* overflow-y: scroll; */
 }
 
+/*end sizing sol*/
+
 h1 {
     color: var(--accent-color);
-    /* margin: 0; */
+    margin: 0;
 }
 
 .hidden {

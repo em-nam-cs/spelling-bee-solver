@@ -13,65 +13,69 @@
         <title>Spelling Bee Solver</title>
     </head>
     <body>
-        <h1>SPELLING BEE SOLVER</h1>
+        <div class="container">
+            <div>
+                <h1>SPELLING BEE SOLVER</h1>
 
-        <form
-            id="inputs-form"
-            autocomplete="off"
-        >
-            <div class="letter-input-container">
-                <input
-                    id="letter-input"
-                    type="text"
-                    placeholder="Enter Letters Here"
+                <form
+                    id="inputs-form"
+                    autocomplete="off"
+                >
+                    <div class="letter-input-container">
+                        <input
+                            id="letter-input"
+                            type="text"
+                            placeholder="Enter Letters Here"
+                        />
+                        <h3
+                            id="input-error-message-display"
+                            class="error-message hidden"
+                        >
+                            Please enter a valid input
+                        </h3>
+
+                        <div id="target-input-container">
+                            <p
+                                id="target-input-label"
+                                class="hidden"
+                            >
+                                Select Target:
+                            </p>
+                            <div id="target-btn-container"></div>
+                        </div>
+                        <button
+                            type="submit"
+                            id="find-words-btn"
+                        >
+                            Find Words
+                        </button>
+                    </div>
+                </form>
+
+                <button id="reset-btn">Reset</button>
+
+                <hr
+                    id="line-break"
+                    class="hidden"
                 />
+            </div>
+
+            <section id="display">
+                <h1
+                    id="word-list-title"
+                    class="hidden"
+                >
+                    Valid Words:
+                </h1>
                 <h3
-                    id="input-error-message-display"
+                    id="target-error-message-display"
                     class="error-message hidden"
                 >
-                    Please enter a valid input
+                    No target was selected
                 </h3>
-
-                <div id="target-input-container">
-                    <p
-                        id="target-input-label"
-                        class="hidden"
-                    >
-                        Select Target:
-                    </p>
-                    <div id="target-btn-container"></div>
-                </div>
-                <button
-                    type="submit"
-                    id="find-words-btn"
-                >
-                    Find Words
-                </button>
-            </div>
-        </form>
-
-        <button id="reset-btn">Reset</button>
-
-        <hr
-            id="line-break"
-            class="hidden"
-        />
-
-        <section id="display">
-            <h1
-                id="word-list-title"
-                class="hidden"
-            >
-                Valid Words:
-            </h1>
-            <h3
-                id="target-error-message-display"
-                class="error-message hidden"
-            >
-                No target was selected
-            </h3>
-            <dl id="word-list-display"></dl>
-        </section>
+                <dl id="word-list-display"></dl>
+            </section>
+        </div>
 
         <script src="script.js"></script>
     </body>

@@ -132,33 +132,51 @@ TEST FUNCTION TO SET SCROLL HEIGHT
 function setDisplayHeight() {
     console.log("Set display height here");
 
-    const bodyChildren = document.body.children;
-    console.log(bodyChildren);
+    const container = document.getElementsByClassName("container")[0];
+    console.log(container.children);
 
-    //calculate cumulative height of sections above the display
-    let remainingHeight = document.body.offsetHeight;
+    //start with initial height available in container
+    let remainingHeight =
+        container.offsetHeight -
+        Number(getComputedStyle(container).paddingTop.slice(0, -2)) -
+        Number(getComputedStyle(container).paddingBottom.slice(0, -2));
+
     console.log(remainingHeight);
     let index = 0;
-    while (bodyChildren[index].id != "display" && index < 10) {
+
+    //subtract the cumulative height of sections above the display
+    while (container.children[index].id != "display" && index < 10) {
         console.log(index);
-        console.log(bodyChildren[index]);
+        console.log(container.children[index]);
         remainingHeight =
             remainingHeight -
-            bodyChildren[index].offsetHeight -
-            getComputedStyle(bodyChildren[index]).marginTop.slice(0, -2) -
-            getComputedStyle(bodyChildren[index]).marginBottom.slice(0, -2);
+            container.children[index].offsetHeight -
+            getComputedStyle(container.children[index]).marginTop.slice(0, -2) -
+            getComputedStyle(container.children[index]).marginBottom.slice(
+                0,
+                -2
+            );
         console.log(remainingHeight);
 
-        console.log(getComputedStyle(bodyChildren[index]).marginTop.slice(0, -2));
+        console.log(
+            getComputedStyle(container.children[index]).marginTop.slice(0, -2)
+        );
         index++;
     }
 
+    //subtract the height of margin to keep for the display section
+    remainingHeight =
+        remainingHeight - getComputedStyle(display).marginBottom.slice(0, -2);
     console.log(display.style.getPropertyValue("offsetHeight"));
-    display.style.setProperty("height", remainingHeight - 200 + "px");
+    console.log(getComputedStyle(display).marginBottom.slice(0, -2));
+
+    //set the height property for the display 
+    display.style.setProperty("height", remainingHeight + "px");
     console.log(display.style.getPropertyValue("height"));
 }
 
-setDisplayHeight();
+// setDisplayHeight();
+// window.addEventListener("resize", setDisplayHeight);
 
 /**
  * Constructor for a ValidWord object, which is an object that is a word
@@ -345,8 +363,6 @@ function displayWords(validWordList, targetExists) {
         wordListDisplayEl.appendChild(newHeading);
     }
 
-    // setDisplayHeight();
-
     //display all the words in the list
     let currLen = validWordList[0].numLetters + 1;
     for (let i = 0; i < validWordList.length; i++) {
@@ -367,6 +383,8 @@ function displayWords(validWordList, targetExists) {
         newWord.innerText = str;
         wordListDisplayEl.appendChild(newWord);
     }
+
+    setDisplayHeight();
 }
 
 /**
