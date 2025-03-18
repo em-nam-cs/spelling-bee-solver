@@ -43,7 +43,7 @@ uppercase as soon as it is read in
 
 */
 
-const MIN_WORD_LENGTH = 2;
+const MIN_WORD_LENGTH = 4;
 const PANAGRAM_BONUS = 7;
 
 /*** Copyright 2020 Teun Duynstee Licensed under the Apache License, Version 2.0 ***/
