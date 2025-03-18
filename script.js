@@ -121,7 +121,7 @@ const inputErrorMsgDisplay = document.getElementById(
 );
 
 inputForm.addEventListener("submit", findWords);
-resetBtn.addEventListener("click", reset); //eventually on reset, reset inputs too not just display
+resetBtn.addEventListener("click", reset);
 letterInput.addEventListener("input", handleLetterInput);
 
 /**
@@ -152,8 +152,6 @@ function ValidWord(word, isPanagram, numLetters, score) {
  * only add/removing the single change
  */
 function handleLetterInput() {
-    console.log("handling letter input");
-
     let letters = readCleanInputLetters();
 
     //clear previous possible targets and then display all letters
@@ -182,7 +180,6 @@ function handleLetterInput() {
  * @return returns the valid input letters
  */
 function readCleanInputLetters() {
-
     letterInput.value = letterInput.value.toUpperCase();
     const input = letterInput.value; //read input
     const onlyLetters = input.replace(/[^a-z]/gim, ""); //remove non-alpha char
@@ -211,7 +208,6 @@ function readCleanInputLetters() {
  *      based on the first occurrence of each letter)
  */
 function removeDuplicates(str) {
-    console.log("removing duplicates");
     let noDuplicates = "";
     for (let i = 0; i < str.length; i++) {
         //if the previous letters already been typed, do not include it
@@ -228,8 +224,6 @@ function removeDuplicates(str) {
         current target)
  */
 function selectTarget(e) {
-    console.log("CLICKED");
-
     //find previous target (if exists) and remove
     const prevTarget = document.getElementsByClassName("target");
     if (prevTarget[0]) {
@@ -247,7 +241,6 @@ function selectTarget(e) {
  */
 function findWords(e) {
     e.preventDefault();
-    console.log("finding words");
     let letters = letterInput.value;
     let target = "";
     let targetExists;
@@ -283,8 +276,6 @@ function findWords(e) {
  * @param {*} validWordList
  */
 function displayWords(validWordList, targetExists) {
-    console.log("displaying words:");
-
     inputErrorMsgDisplay.classList.add("hidden"); //clears input err msg because done inputting
     clearWordListDisplay(); //clears previous results
 
@@ -305,6 +296,17 @@ function displayWords(validWordList, targetExists) {
         newHeading.innerText = "No Words Found";
         wordListDisplayEl.appendChild(newHeading);
         return;
+    }
+
+    //display heading for panagrams
+    if (returnAllPanagrams(validWordList).length == 0){
+        const newHeading = document.createElement("h3");
+        newHeading.innerText = "No Panagrams Found";
+        wordListDisplayEl.appendChild(newHeading);
+    } else {
+        const newHeading = document.createElement("h3");
+        newHeading.innerText = "Panagrams are marked with *";
+        wordListDisplayEl.appendChild(newHeading);
     }
 
     //display all the words in the list
@@ -351,7 +353,6 @@ function clearInputDisplay() {
  * clears the target dislpay and removes the event handles for each target btn
  */
 function clearTargetDisplay() {
-    console.log("clearing target display");
     targetInputLabel.classList.add("hidden");
     while (targetBtnContainer.firstChild) {
         targetBtnContainer.removeChild(targetBtnContainer.lastChild);
@@ -364,7 +365,6 @@ function clearTargetDisplay() {
  * and error messages to clear the results from the display
  */
 function clearWordListDisplay() {
-    console.log("clearing word list display");
     lineBreakEl.classList.add("hidden");
     wordListTitleEl.classList.add("hidden");
     targetErrorMsgDisplay.classList.add("hidden");
