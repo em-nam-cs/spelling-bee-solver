@@ -6,7 +6,7 @@
     --text-color: #000000;
     --accent-color: #bca623;
 
-    box-sizing: border-box;
+    box-sizing: content-box;
 }
 
 body {
@@ -16,9 +16,12 @@ body {
     /* flex-direction: column; */
     /* justify-content: center; */
     align-items: center;
-    min-height: 100vh;
+    /* min-height: 100vh; */
+    margin: 0;
+    padding: 25px;
+    height: 100vh;
     overflow: hidden;
-    margin: 25px;
+    
 }
 
 .letter-input-container {
@@ -96,13 +99,21 @@ button {
 
 /*temp solution:*/
 /*need fixed height for scroll to work, but this only works when screen height is full (because input section takes up space)*/
-section {
+#display {
+    background-color: pink;
     overflow-y: auto;
-    height: 55vh;
+    /* height: 55vh; */
+
+    overflow-y: scroll;
+}
+
+#word-list-display {
+    /* overflow-y: scroll; */
 }
 
 h1 {
     color: var(--accent-color);
+    /* margin: 0; */
 }
 
 .hidden {

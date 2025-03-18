@@ -107,6 +107,7 @@ readDictionary("assets/dictionary.txt");
 
 const letterInput = document.getElementById("letter-input");
 const inputForm = document.getElementById("inputs-form");
+const display = document.getElementById("display");
 const wordListDisplayEl = document.getElementById("word-list-display");
 const resetBtn = document.getElementById("reset-btn");
 const wordListTitleEl = document.getElementById("word-list-title");
@@ -123,6 +124,41 @@ const inputErrorMsgDisplay = document.getElementById(
 inputForm.addEventListener("submit", findWords);
 resetBtn.addEventListener("click", reset);
 letterInput.addEventListener("input", handleLetterInput);
+
+/**
+TEST FUNCTION TO SET SCROLL HEIGHT
+ */
+
+function setDisplayHeight() {
+    console.log("Set display height here");
+
+    const bodyChildren = document.body.children;
+    console.log(bodyChildren);
+
+    //calculate cumulative height of sections above the display
+    let remainingHeight = document.body.offsetHeight;
+    console.log(remainingHeight);
+    let index = 0;
+    while (bodyChildren[index].id != "display" && index < 10) {
+        console.log(index);
+        console.log(bodyChildren[index]);
+        remainingHeight =
+            remainingHeight -
+            bodyChildren[index].offsetHeight -
+            getComputedStyle(bodyChildren[index]).marginTop.slice(0, -2) -
+            getComputedStyle(bodyChildren[index]).marginBottom.slice(0, -2);
+        console.log(remainingHeight);
+
+        console.log(getComputedStyle(bodyChildren[index]).marginTop.slice(0, -2));
+        index++;
+    }
+
+    console.log(display.style.getPropertyValue("offsetHeight"));
+    display.style.setProperty("height", remainingHeight - 200 + "px");
+    console.log(display.style.getPropertyValue("height"));
+}
+
+setDisplayHeight();
 
 /**
  * Constructor for a ValidWord object, which is an object that is a word
@@ -231,7 +267,7 @@ function selectTarget(e) {
     }
 
     //set newly clicked to target
-    e.explicitOriginalTarget.classList.add("target");
+    e.target.classList.add("target");
 }
 
 /**
@@ -299,7 +335,7 @@ function displayWords(validWordList, targetExists) {
     }
 
     //display heading for panagrams
-    if (returnAllPanagrams(validWordList).length == 0){
+    if (returnAllPanagrams(validWordList).length == 0) {
         const newHeading = document.createElement("h3");
         newHeading.innerText = "No Panagrams Found";
         wordListDisplayEl.appendChild(newHeading);
@@ -308,6 +344,8 @@ function displayWords(validWordList, targetExists) {
         newHeading.innerText = "Panagrams are marked with *";
         wordListDisplayEl.appendChild(newHeading);
     }
+
+    // setDisplayHeight();
 
     //display all the words in the list
     let currLen = validWordList[0].numLetters + 1;
